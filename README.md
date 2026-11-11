@@ -16,4 +16,14 @@ Proyecto académico para la I.E. Juventud Científica.
 - Datos sintéticos, no registros reales de estudiantes.
 - **No subir** contraseñas, tokens o archivos `.env` privados.
 
+## Ejecutar el sistema (Docker Compose)
+
+```bash
+cp .env.example .env      # Windows: copy .env.example .env
+docker compose up --build
+```
+
+- API y documentación: <http://localhost:8000/docs> (usuario demo: `docente1@demo.edu.pe` / `Docente123!`)
+- Detalles del backend, endpoints y Supabase: [Backend/README.md](Backend/README.md)
+
 > Esta es solo la estructura inicial; cada responsable agregará su código y documentos.
