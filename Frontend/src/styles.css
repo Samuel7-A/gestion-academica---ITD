@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+/* Reseteo universal y estandarización de caja para diseño responsivo fluido */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 16px;
+  background-color: #f6f6f6;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Variables globales de diseño */
+:root {
+  --primary: #2c4a87;
+  --primary-hover: #233b6d;
+  --bg-main: #f4f6f9;
+  --text-main: #1e293b;
+  --border-color: #cbd5e1;
+}

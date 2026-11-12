@@ -1,0 +1,19 @@
+<div class="app-layout">
+  <!-- Navbar lateral persistente -->
+  <app-navbar></app-navbar>
+
+  <main class="main-content">
+    <!-- Topbar global persistente -->
+    <app-topbar 
+      title="Gestión Académica" 
+      subtitle="Panel Principal · Docente"
+      [showAutosave]="true"
+      lastSavedText="Guardado automático · hace un momento">
+    </app-topbar>
+
+    <!-- Contenido dinámico de las páginas hijas -->
+    <div class="page-container">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

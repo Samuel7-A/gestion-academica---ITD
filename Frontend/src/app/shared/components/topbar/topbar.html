@@ -1,0 +1,16 @@
+<header class="topbar">
+  <div class="header-titles">
+    <h1>{{ title }}</h1>
+    <p>{{ subtitle }}</p>
+  </div>
+
+  <div class="topbar-right">
+    @if (showAutosave && lastSavedText) {
+      <div class="autosave-badge">
+        <span class="status-dot"></span>
+        <span>{{ lastSavedText }}</span>
+      </div>
+    }
+    <div class="avatar">{{ userInitial }}</div>
+  </div>
+</header>

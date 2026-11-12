@@ -1,0 +1,122 @@
+/* Animación de entrada general para la barra superior */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animación de pulso sutil para el indicador en vivo */
+@keyframes pulse-dot {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.topbar {
+  background-color: #ffffff;
+  padding: 1.25rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.01), 0 1px 2px -1px rgba(0, 0, 0, 0.01);
+  flex-wrap: wrap;
+  gap: 1rem;
+  animation: fadeInDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+}
+
+.header-titles h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.15rem;
+  letter-spacing: -0.01em;
+}
+
+.header-titles p {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 400;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.autosave-badge {
+  background-color: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 0.4rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.autosave-badge:hover {
+  background-color: #dcfce7;
+  border-color: #86efac;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #10b981;
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  color: #1e3a8a;
+  border: 1.5px solid #bfdbfe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(30, 58, 138, 0.04);
+}
+
+.avatar:hover {
+  transform: translateY(-2px) scale(1.03);
+  border-color: #93c5fd;
+  box-shadow: 0 6px 15px -3px rgba(30, 58, 138, 0.12);
+}
+
+/* Responsividad fluida */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 1rem 1.25rem;
+  }
+}

@@ -1,0 +1,243 @@
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.topbar {
+  background-color: #ffffff;
+  padding: 1.25rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header-titles h1 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.2rem;
+}
+
+.header-titles p {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.autosave-badge {
+  background-color: #eff6ff;
+  color: #1e3a8a;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  background-color: #10b981;
+  border-radius: 50%;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background-color: #eff6ff;
+  color: #1e3a8a;
+  border: 1px solid #dbeafe;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.page-body {
+  padding: 2rem 2.5rem;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.actions-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.btn {
+  padding: 0.55rem 1.15rem;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}
+
+.btn-outline:hover {
+  background-color: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.btn-primary {
+  background-color: #254e9b;
+  color: #ffffff;
+  border: 1px solid #254e9b;
+}
+
+.btn-primary:hover {
+  background-color: #1e3a8a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(30, 58, 138, 0.15);
+}
+
+.table-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.grades-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.grades-table thead {
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.grades-table th {
+  padding: 1rem 1.5rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.2px;
+}
+
+.grades-table td {
+  padding: 1rem 1.5rem;
+  font-size: 0.85rem;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.15s ease;
+}
+
+.grades-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.grades-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.col-student {
+  text-align: left !important;
+  font-weight: 500;
+  color: #1e293b;
+  min-width: 180px;
+}
+
+.col-average {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.grade-input {
+  width: 58px;
+  padding: 0.35rem 0.5rem;
+  text-align: center;
+  border: 1px solid #93c5fd;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #1e293b;
+  outline: none;
+}
+
+.grade-input:focus {
+  border-color: #254e9b;
+  box-shadow: 0 0 0 3px rgba(37, 78, 155, 0.12);
+}
+
+.bottom-controls {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.btn-edit {
+  padding: 0.65rem 1.25rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.4px;
+}
+
+.backup-banner {
+  background-color: #ecfdf5;
+  color: #047857;
+  border: 1px solid #d1fae5;
+  padding: 0.65rem 1.15rem;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+/* Responsividad para Tablets y Celulares */
+@media (max-width: 768px) {
+  .app-layout {
+    flex-direction: column;
+  }
+
+  .topbar {
+    padding: 1rem 1.25rem;
+  }
+
+  .page-body {
+    padding: 1.25rem;
+  }
+
+  .actions-toolbar {
+    justify-content: stretch;
+  }
+
+  .actions-toolbar .btn {
+    flex: 1;
+  }
+}

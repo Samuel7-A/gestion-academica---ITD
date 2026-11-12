@@ -1,0 +1,49 @@
+<div class="app-layout">
+
+  <main class="main-content">
+
+    <div class="dashboard-grid">
+      <!-- Sección Izquierda: Cursos -->
+      <section class="courses-section">
+        <div class="section-header">
+          <h1>Mis cursos</h1>
+          <p>Bienvenido, Docente</p>
+        </div>
+
+        <div class="courses-grid">
+        @for (course of courses; track $index) {
+          <app-course-card 
+            [courseName]="course.name"
+            [studentsCount]="course.students">
+           </app-course-card>
+        }
+        </div>
+      </section>
+
+      <!-- Sección Derecha: Actividades Semanales -->
+      <aside class="activities-sidebar">
+        <div class="activities-card">
+          <h2>Actividades Semanales</h2>
+          <div class="activities-list">
+
+            @for (activity of activities; track $index) {
+              <app-activity-card
+                [type]="activity.type"
+                [day]="activity.day"
+                [title]="activity.title"
+                [detail]="activity.detail">
+                </app-activity-card>
+            }
+
+            <div class="activity-item" *ngFor="let act of activities">
+              <span class="activity-meta">{{ act.type }} - {{ act.day }}</span>
+              <h4>{{ act.title }}</h4>
+              <p>{{ act.detail }}</p>
+            </div>
+
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+</div>

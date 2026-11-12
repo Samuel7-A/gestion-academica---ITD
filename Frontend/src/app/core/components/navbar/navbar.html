@@ -1,0 +1,18 @@
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-badge">GA</div>
+    <span class="brand-title">Gestión Académica</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    @for (item of menuItems; track $index) {
+      <a 
+      [routerLink]="item.route" 
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.route === '/courses' }"
+      class="nav-item">
+      <span>{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</aside>
