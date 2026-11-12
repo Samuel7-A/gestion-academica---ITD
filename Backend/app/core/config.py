@@ -49,11 +49,15 @@ class Settings(BaseSettings):
 
     @property
     def sqlalchemy_database_url(self) -> str:
-        """Acepta URLs al estilo Supabase (postgresql://...) y fuerza el driver psycopg 3."""
+        """Acepta URLs al estilo Supabase (postgresql://...), fuerza el driver psycopg 3
+        y exige SSL cuando la base está en Supabase."""
         url = self.database_url.strip() or DEFAULT_DATABASE_URL
         for prefix in ("postgres://", "postgresql://"):
             if url.startswith(prefix):
-                return "postgresql+psycopg://" + url[len(prefix):]
+                url = "postgresql+psycopg://" + url[len(prefix):]
+                break
+        if ".supabase." in url and "sslmode=" not in url:
+            url += ("&" if "?" in url else "?") + "sslmode=require"
         return url
 
 

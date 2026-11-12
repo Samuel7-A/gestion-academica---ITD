@@ -62,17 +62,28 @@ uvicorn app.main:app --reload   # http://localhost:8000/docs
 
 ## 4. Usar Supabase
 
-1. En Supabase: **Project Settings → Database → Connection string**. Usa el modo
-   **Session pooler** (puerto 5432) o la conexión directa.
-2. En el archivo `.env` de la raíz define:
+El proyecto del equipo ya está creado (región São Paulo) con las tablas y los datos de demostración.
+La cadena de conexión se comparte **por mensaje privado**, nunca en el repositorio.
+
+1. En Supabase: botón **Connect** → **Connection String** → Type **URI**, Method **Session pooler**.
+   No uses "Direct connection": solo funciona con IPv6 (Docker y muchas redes domésticas no lo tienen).
+2. En el archivo `.env` de la raíz define (reemplaza `[YOUR-PASSWORD]`, sin corchetes):
    ```
-   DATABASE_URL=postgresql://postgres.xxxxx:TU_PASSWORD@aws-0-xx.pooler.supabase.com:5432/postgres?sslmode=require
+   DATABASE_URL=postgresql://postgres.xxxxx:TU_PASSWORD@aws-0-sa-east-1.pooler.supabase.com:5432/postgres
    ```
-3. Ejecuta `alembic upgrade head` (o `docker compose up`, que lo hace solo).
+   Si la contraseña tiene símbolos (`@ # / : ?`), deben ir codificados en la URL; es más simple usar solo letras y números.
+3. Ejecuta `alembic upgrade head` (o `docker compose up --build`, que lo hace solo).
    Alternativa: pegar `sql/schema.sql` en el SQL Editor de Supabase.
 
-El backend convierte automáticamente `postgresql://` al driver `psycopg` y desactiva las sentencias
-preparadas para ser compatible con el pooler de Supabase.
+El backend convierte automáticamente `postgresql://` al driver `psycopg`, exige SSL (`sslmode=require`)
+y desactiva las sentencias preparadas para ser compatible con el pooler de Supabase.
+
+**Seguridad:** el proyecto se creó con la *Data API* de Supabase desactivada, porque Angular nunca se
+conecta directo a la base de datos: todo pasa por FastAPI. Además, la migración `0002` activa
+Row Level Security en todas las tablas, de modo que aunque alguien active la Data API, nadie con la clave
+pública pueda leerlas. El backend no se ve afectado porque se conecta como dueño de las tablas.
+
+Con Docker Compose y `DATABASE_URL` definido, el servicio `db` local también se inicia, pero la API no lo usa.
 
 ## 5. Variables de entorno
 

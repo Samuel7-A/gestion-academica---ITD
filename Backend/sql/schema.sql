@@ -2,6 +2,7 @@
 -- Generado desde la migración Alembic con: alembic upgrade head --sql
 -- Se puede ejecutar directamente en el SQL Editor de Supabase.
 -- Recomendado: usar "alembic upgrade head" para que la versión quede registrada.
+-- Incluye la activación de RLS (migración 0002) para proteger las tablas en Supabase.
 
 BEGIN;
 
@@ -128,6 +129,32 @@ CREATE TABLE grades (
 CREATE INDEX ix_grades_student_id ON grades (student_id);
 
 INSERT INTO alembic_version (version_num) VALUES ('0001') RETURNING alembic_version.version_num;
+
+-- Running upgrade 0001 -> 0002
+
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE students ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE courses ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE sections ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE course_sections ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE enrollments ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE activities ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE grades ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE academic_indicators ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE annual_results ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE alembic_version ENABLE ROW LEVEL SECURITY;
+
+UPDATE alembic_version SET version_num='0002' WHERE alembic_version.version_num = '0001';
 
 COMMIT;
 
