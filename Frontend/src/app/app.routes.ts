@@ -4,7 +4,8 @@ import { MainLayoutComponent } from './layouts/main-layout/main-layout';
 export const routes: Routes = [
   // Rutas públicas (Login / Registro)
   {
-    path: 'auth/login',
+    path:'',
+    redirectTo: 'auth/login',
     loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent)
   },
   {
@@ -14,7 +15,7 @@ export const routes: Routes = [
 
   // Rutas internas con Layout Fijo (Navbar persistente)
   {
-    path: '',
+    path: 'principal',
     component: MainLayoutComponent,
     children: [
       {
