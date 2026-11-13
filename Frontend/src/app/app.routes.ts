@@ -19,11 +19,15 @@ export const routes: Routes = [
     children: [
       {
         path: 'courses',
-        loadComponent: () => import('./features/courses/pages/course-page/courses-page').then(m => m.CoursesPageComponent)
+        loadComponent: () => import('./features/pages/course-page/courses-page').then(m => m.CoursesPageComponent)
       },
       {
         path: 'courses/grades',
-        loadComponent: () => import('./features/courses/pages/grades-page/grades-pages').then(m  => m.GradesPageComponent)
+        loadComponent: () => import('./features/pages/grades-page/grades-pages').then(m  => m.GradesPageComponent)
+      },
+      {
+        path: 'courses/performance',
+        loadComponent:() => import('./features/pages/grades-performance/grades-performance').then(m => m.GradesPerformanceComponent)
       },
       {
         path: '',

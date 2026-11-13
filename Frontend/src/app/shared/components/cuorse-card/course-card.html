@@ -1,4 +1,23 @@
-<div class="course-card">
-  <h3>{{ courseName }}</h3>
-  <p>{{ studentsCount }} estudiantes</p>
+<div class="course-card" (click)="onCardClick()">
+  <div class="card-glow"></div>
+  <div class="card-content">
+    <span class="course-category">{{ category }}</span>
+    <h3 class="course-title">{{ courseName }}</h3>
+    <div class="course-footer">
+      <span class="students-badge">
+        <svg class="student-icon" viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2" fill="none">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+        {{ studentsCount }} estudiantes
+      </span>
+      <span class="arrow-icon">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </span>
+    </div>
+  </div>
 </div>

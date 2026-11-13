@@ -1,18 +1,51 @@
-<aside class="sidebar">
+<!-- Botón superior móvil para desplegar el menú -->
+<button class="mobile-toggle-btn" (click)="toggleMobileMenu()" aria-label="Abrir menú">
+  <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none">
+    @if (!isMobileOpen) {
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    } @else {
+      <line x1="18" y1="6" x2="6" y2="18"></line>
+      <line x1="6" y1="6" x2="18" y2="18"></line>
+    }
+  </svg>
+  <span>Menú de Navegación</span>
+</button>
+
+<!-- Sidebar Principal -->
+<aside class="sidebar" [class.mobile-open]="isMobileOpen">
   <div class="sidebar-brand">
     <div class="brand-badge">GA</div>
-    <span class="brand-title">Gestión Académica</span>
+    <div class="brand-info">
+      <span class="brand-title">Gestión Académica</span>
+      <span class="brand-subtitle">Panel Docente</span>
+    </div>
   </div>
 
   <nav class="sidebar-nav">
     @for (item of menuItems; track $index) {
       <a 
-      [routerLink]="item.route" 
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: item.route === '/courses' }"
-      class="nav-item">
-      <span>{{ item.label }}</span>
+        [routerLink]="item.route" 
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: item.route === '/courses' }"
+        class="nav-item"
+        (click)="closeMobileMenu()">
+        <span class="nav-indicator-dot"></span>
+        <span class="nav-text">{{ item.label }}</span>
       </a>
     }
   </nav>
+
+  <div class="sidebar-footer">
+    <div class="footer-card">
+      <span class="footer-title">Sistema Activo</span>
+      <span class="footer-subtitle">v2.4 · Conexión Segura</span>
+    </div>
+  </div>
 </aside>
+
+<!-- Overlay transparente para móviles cuando el menú está abierto -->
+@if (isMobileOpen) {
+  <div class="sidebar-overlay" (click)="closeMobileMenu()"></div>
+}

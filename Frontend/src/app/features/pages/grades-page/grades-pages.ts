@@ -1,7 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { NavbarComponent } from '../../../../core/components/navbar/navbar';
+import { CustomButtonComponent } from '../../../shared/components/custom-button/custom-button';
+import { CustomInputComponent } from '../../../shared/components/custom-input/custom-input';
 
 interface StudentGrade {
   id: number;
@@ -14,7 +15,12 @@ interface StudentGrade {
 @Component({
   selector: 'app-grades-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, NavbarComponent],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    CustomButtonComponent, 
+    CustomInputComponent
+  ],
   templateUrl: './grades-pages.html',
   styleUrls: ['./grades-pages.css']
 })

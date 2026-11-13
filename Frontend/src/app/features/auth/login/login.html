@@ -7,28 +7,37 @@
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="usuario">Usuario</label>
-        <input 
-          id="usuario" 
-          type="email" 
-          formControlName="usuario" 
-          placeholder="docente@ie.edu.pe"
-        />
+        <app-custom-input
+          label="Usuario"
+          type="email"
+          formControlName="usuario"
+          placeholder="docnete@ie.edu.pe"
+          ></app-custom-input>
+
       </div>
 
       <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input 
-          id="password" 
-          type="password" 
-          formControlName="password" 
-          placeholder="••••••••"
-        />
+        <app-custom-input
+          label="contraseña"
+          type="password"
+          placeholder="sebitas123"
+          formControlName="password"
+          ></app-custom-input>
+
       </div>
+      <p>{{mensajeError}}</p>
 
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-        <button type="button" class="btn btn-secondary" (click)="onRegister()">Registrarse</button>
+        <app-custom-button 
+          text="Iniciar Sesion"
+          type="submit"
+          [disabled]="loginForm.invalid"
+          ></app-custom-button>
+        <app-custom-button
+          text="Registrarse"
+          type="button"
+          (clicked)="onRegister()"
+          ></app-custom-button>
       </div>
     </form>
   </div>

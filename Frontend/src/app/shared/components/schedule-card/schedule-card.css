@@ -1,0 +1,92 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.schedule-card {
+  position: relative;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 1.15rem 1.5rem;
+  cursor: pointer;
+  overflow: hidden;
+  display: flex;
+  align-items: stretch;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01), 0 1px 2px rgba(0, 0, 0, 0.01);
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+/* Indicador lateral sutil estilo minimalista */
+.card-indicator {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: #3b82f6;
+  opacity: 0.8;
+  transition: opacity 0.25s ease;
+}
+
+.schedule-card:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 20px -4px rgba(37, 78, 155, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  background-color: #fafbfc;
+}
+
+.schedule-card:hover .card-indicator {
+  opacity: 1;
+  background: #254e9b;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-left: 0.5rem;
+  width: 100%;
+}
+
+.badge-text {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #254e9b;
+}
+
+.card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.card-info {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 0.1rem 0 0 0;
+  font-weight: 400;
+}
+
+.description-text {
+  color: #64748b;
+  font-style: normal;
+}
+
+.info-icon {
+  color: #94a3b8;
+}

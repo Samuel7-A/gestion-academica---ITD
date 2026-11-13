@@ -10,13 +10,23 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./navbar.css']
 })
 export class NavbarComponent {
+  isMobileOpen = false;
+
   menuItems = [
-    { label: 'Cursos', route: '/courses', icon: 'book' },
-    { label: 'Registro de calificaciones', route: '/courses/grades', icon: 'clipboard' },
-    { label: 'Notas', route: '/courses/notes', icon: 'file-text' },
-    { label: 'Exámenes', route: '/courses/exams', icon: 'award' },
-    { label: 'Reportes', route: '/courses/reports', icon: 'bar-chart' },
-    { label: 'Indicadores de riesgo', route: '/courses/risks', icon: 'alert-triangle' },
-    { label: 'Horario', route: '/courses/schedule', icon: 'calendar' }
+    { label: 'Cursos', route: '/courses' },
+    { label: 'Registro de calificaciones', route: '/courses/grades' },
+    { label: 'Notas', route: '/courses/performance' },
+    { label: 'Exámenes', route: '/courses/exams' },
+    { label: 'Reportes', route: '/courses/reports' },
+    { label: 'Indicadores de riesgo', route: '/courses/risks' },
+    { label: 'Horario', route: '/courses/schedule' }
   ];
+
+  toggleMobileMenu(): void {
+    this.isMobileOpen = !this.isMobileOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.isMobileOpen = false;
+  }
 }

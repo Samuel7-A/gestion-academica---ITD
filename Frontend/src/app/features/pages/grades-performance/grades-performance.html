@@ -1,0 +1,100 @@
+<div class="performance-view">
+  
+  <!-- Barra Superior de Filtros -->
+  <form [formGroup]="filterForm" class="filters-toolbar">
+    
+    <!-- Selector de Curso -->
+    <div class="filter-group">
+      <label class="filter-label">CURSO</label>
+      <div class="select-wrapper">
+        <select formControlName="selectedCourse" (change)="onFilterChange()" class="filter-select">
+          @for (course of courses; track course.id) {
+            <option [value]="course.name">{{ course.name }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Selector de Tipo de Actividad -->
+    <div class="filter-group">
+      <label class="filter-label">TIPO DE ACTIVIDAD</label>
+      <div class="select-wrapper">
+        <select formControlName="selectedActivityType" (change)="onFilterChange()" class="filter-select">
+          @for (type of activityTypes; track $index) {
+            <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Buscador General -->
+    <div class="filter-group search-group">
+      <label class="filter-label">BUSCAR</label>
+      <app-custom-input
+        formControlName="searchQuery"
+        placeholder="Buscar por nombre de actividad..."
+        customClass="search-input-override">
+      </app-custom-input>
+    </div>
+
+  </form>
+
+  <!-- Tarjeta Contenedora de la Tabla / Bimestres -->
+  <div class="table-card">
+    <div class="table-responsive">
+      
+      <!-- Cabecera de la Tabla -->
+      <div class="table-header-row">
+        <span>Bimestres</span>
+        <span>Tipo</span>
+        <span>Fecha</span>
+        <span>Nota</span>
+        <span>Peso (%)</span>
+        <span>Estado</span>
+      </div>
+
+      <!-- Iteración y aplicación del componente para cada bimestre -->
+      @for (item of performanceList; track $index) {
+        <app-performance-card 
+          [periodName]="item.periodName" 
+          [activityType]="item.activityType" 
+          [date]="item.date" 
+          [grade]="item.grade" 
+          [weight]="item.weight" 
+          [status]="item.status">
+        </app-performance-card>
+      }
+
+    </div>
+  </div>
+
+  <!-- Tarjeta de Resumen y Rendimiento Ponderado -->
+  <div class="summary-card">
+    <div class="summary-info">
+      <div class="summary-icon-box">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+          <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+          <line x1="8" y1="6" x2="16" y2="6"></line>
+          <line x1="16" y1="14" x2="16" y2="18"></line>
+          <path d="M8 10h.01"></path>
+          <path d="M12 10h.01"></path>
+          <path d="M16 10h.01"></path>
+          <path d="M8 14h.01"></path>
+          <path d="M12 14h.01"></path>
+          <path d="M8 18h.01"></path>
+          <path d="M12 18h.01"></path>
+        </svg>
+      </div>
+      <div class="summary-text">
+        <h3>Resumen de Rendimiento de Matemática</h3>
+        <p>Promedio calculado en base al peso de las actividades calificadas a la fecha.</p>
+      </div>
+    </div>
+    
+    <div class="summary-score">
+      <span class="score-label">PROMEDIO PONDERADO</span>
+      <span class="score-value">15.2</span>
+    </div>
+  </div>
+
+</div>

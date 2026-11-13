@@ -1,0 +1,16 @@
+<div class="input-wrapper" [ngClass]="customClass">
+  @if (label) {
+    <label class="input-label">{{ label }}</label>
+  }
+  <div class="input-container">
+    <input 
+      [type]="type"
+      [value]="value"
+      [disabled]="isDisabled"
+      [placeholder]="placeholder"
+      (input)="onInput($event)"
+      (blur)="onTouched()"
+      class="custom-input-field"
+    />
+  </div>
+</div>

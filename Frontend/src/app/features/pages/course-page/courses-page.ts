@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavbarComponent } from '../../../../core/components/navbar/navbar';
-import { CourseCardComponent } from '../../../../shared/components/cuorse-card/course-card';
-import { ActivityCardComponent } from '../../../../shared/components/activity-card/activity-card';
+import { Router } from '@angular/router';
+import { CourseCardComponent } from '../../../shared/components/cuorse-card/course-card';
+import { ScheduleCardComponent } from '../../../shared/components/schedule-card/achedule-card';
 
 interface Course {
   name: string;
@@ -21,14 +21,15 @@ interface Activity {
   standalone: true,
   imports:
     [CommonModule,
-      NavbarComponent,
       CourseCardComponent,
-      ActivityCardComponent,
+      ScheduleCardComponent,
     ],
   templateUrl: './courses-page.html',
   styleUrls: ['./courses-page.css']
 })
 export class CoursesPageComponent {
+
+  router = inject(Router);
   courses: Course[] = [
     { name: 'Calculo 5°A', students: 29 },
     { name: 'Matematica 5° A', students: 29 },
@@ -48,4 +49,9 @@ export class CoursesPageComponent {
     { type: 'Actividad', day: 'Miercoles', title: 'Geometria 2°B', detail: 'Presentación de Formar Poligona..' },
     { type: 'Prueba', day: 'Martes', title: 'Aritmetica 3°B', detail: 'Funciones Cuadraticas, num....' }
   ];
+
+  onSelectCurse() : void{
+    this.router.navigate(['/courses/grades']);
+  }
+
 }

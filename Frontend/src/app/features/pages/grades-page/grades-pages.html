@@ -2,8 +2,18 @@
   <main class="main-content">
     <div class="page-body">
       <div class="actions-toolbar">
-        <button type="button" class="btn btn-outline" (click)="onImport()">Importar</button>
-        <button type="button" class="btn btn-primary" (click)="onExport()">Exportar reporte</button>
+        <app-custom-button
+          text="Importar"
+          (clicked)="onImport()"
+          customClass="btn-outline"
+          [disabled]="isEditing"
+          ></app-custom-button>
+          <app-custom-button
+            text="Exportar reporte"
+            customClass="btn-primary"
+            (clicked)="onExport()"
+            [disabled]="isEditing"
+            ></app-custom-button>
       </div>
 
       <form [formGroup]="gradesForm" class="table-card">
@@ -25,15 +35,23 @@
                   
                   <td>
                     @if (isEditing) {
-                      <input type="number" formControlName="act1" min="0" max="20" class="grade-input" />
-                    } @else {
+                      <app-custom-input
+                        type="number"
+                        formControlName="act1"
+                        customClass="grade-input"
+                        ></app-custom-input>
+                    } @else { 
                       <span>{{ studentGroup.get('act1')?.value }}</span>
                     }
                   </td>
 
                   <td>
                     @if (isEditing) {
-                      <input type="number" formControlName="act2" min="0" max="20" class="grade-input" />
+                      <app-custom-input
+                        type="number"
+                        formControlName="act2"
+                        class="grade-input"
+                        ></app-custom-input>
                     } @else {
                       <span>{{ studentGroup.get('act2')?.value }}</span>
                     }
@@ -41,7 +59,11 @@
 
                   <td>
                     @if (isEditing) {
-                      <input type="number" formControlName="act3" min="0" max="20" class="grade-input" />
+                      <app-custom-input
+                        type="number"
+                        formControlName="act3"
+                        customClass="grade-input"
+                        ></app-custom-input>
                     } @else {
                       <span>{{ studentGroup.get('act3')?.value }}</span>
                     }
@@ -56,9 +78,11 @@
       </form>
 
       <div class="bottom-controls">
-        <button type="button" class="btn btn-primary btn-edit" (click)="toggleEdit()">
-          {{ isEditing ? 'GUARDAR NOTAS' : 'EDICIÓN DE NOTAS' }}
-        </button>
+        <app-custom-button
+          text="{{isEditing ? 'GUARDAR NOTAS' : 'EICION DE NOTAS'}}"
+          type="button"
+          (clicked)="toggleEdit()"
+          ></app-custom-button>
 
         <div class="backup-banner">
           Respaldo y trazabilidad de cambios activa · último respaldo hace 2 min

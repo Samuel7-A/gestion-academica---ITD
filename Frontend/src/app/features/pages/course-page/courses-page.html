@@ -14,8 +14,9 @@
         @for (course of courses; track $index) {
           <app-course-card 
             [courseName]="course.name"
-            [studentsCount]="course.students">
-           </app-course-card>
+            [studentsCount]="course.students"
+            (cardClick)="onSelectCurse()"
+            ></app-course-card>
         }
         </div>
       </section>
@@ -26,20 +27,16 @@
           <h2>Actividades Semanales</h2>
           <div class="activities-list">
 
-            @for (activity of activities; track $index) {
-              <app-activity-card
-                [type]="activity.type"
-                [day]="activity.day"
-                [title]="activity.title"
-                [detail]="activity.detail">
-                </app-activity-card>
+            @for (item of activities; track $index) {
+              <app-schedule-card
+                [badgeText]="item.type"
+                [title]="item.title"
+                [time]="item.day"
+                [description]="item.detail"
+                >
+                </app-schedule-card>
             }
 
-            <div class="activity-item" *ngFor="let act of activities">
-              <span class="activity-meta">{{ act.type }} - {{ act.day }}</span>
-              <h4>{{ act.title }}</h4>
-              <p>{{ act.detail }}</p>
-            </div>
 
           </div>
         </div>

@@ -7,74 +7,49 @@
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="primerNombre">Primer Nombre</label>
-        <input 
-          id="primerNombre" 
-          type="text" 
-          formControlName="primerNombre" 
-          placeholder="Marcelino"
-        />
+        <app-custom-input label="Primer Nombre" type="text" formControlName="primerNombre"
+          placeholder="Marcelino"></app-custom-input>
       </div>
 
       <div class="form-group">
-        <label for="apellidos">Apellidos</label>
-        <input 
-          id="apellidos" 
-          type="text" 
-          formControlName="apellidos" 
-          placeholder="Rojas de la Cruz"
-        />
+        <app-custom-input label="Apellidos" text="Apellidos" type="text" formControlName="apellidos"
+          placeholder="Rojas de la Cruz"></app-custom-input>
       </div>
 
       <div class="form-group">
-        <label for="telefono">Numero Telefono</label>
-        <input 
-          id="telefono" 
-          type="tel" 
-          formControlName="telefono" 
-          placeholder="952 152 154"
-        />
+        <app-custom-input label="Numero Telefono" type="tel" formControlName="telefono"
+          placeholder="952 152 154"></app-custom-input>
       </div>
 
       <div class="form-group">
         <label>Especialidades</label>
         <div class="especialidades-box">
-          <button 
-            type="button" 
-            *ngFor="let esp of especialidadesList"
-            class="pill-btn"
-            [class.active]="isEspecialidadSelected(esp)"
-            (click)="toggleEspecialidad(esp)"
-          >
-            {{ esp }}
+          @for (esp of especialidadesList; track $index) {
+          <button type="button" class="pill-btn" [class.active]="isEspecialidadSelected(esp)"
+            (click)="toggleEspecialidad(esp)">
+            {{ esp.nombre }}
           </button>
+          }
         </div>
       </div>
 
-      <div class="form-group">
-        <label for="correo">Correo</label>
-        <input 
-          id="correo" 
-          type="email" 
-          formControlName="correo" 
-          placeholder="soy_Docente.pro@gmail.com"
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="password">Contraseña</label>
-        <input 
-          id="password" 
-          type="password" 
-          formControlName="password" 
-          placeholder="••••••••"
-        />
-      </div>
-
+      <app-custom-input
+        label="Correo"
+        type="email"
+        formControlName="correo"
+        placeholder="soy_Docente.pro@gmail.com"
+        ></app-custom-input>
+      <app-custom-input
+        label="Contraseña"
+        type="password"
+        placeholder="sebitasPro385"
+        formControlName="password"
+        ></app-custom-input>
       <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Registrarse</button>
-        <button type="button" class="btn btn-secondary" (click)="onLoginRedirect()">Iniciar Sesion</button>
+        <app-custom-button text="Registrarse" type="submit" [disabled]="registerForm.invalid"></app-custom-button>
+        <app-custom-button text="Iniciar Sesion" (clicked)="onLoginRedirect()"></app-custom-button>
       </div>
+
     </form>
   </div>
 </div>

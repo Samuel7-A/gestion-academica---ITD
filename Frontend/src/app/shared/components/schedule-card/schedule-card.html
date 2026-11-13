@@ -1,0 +1,23 @@
+<div class="schedule-card" (click)="onClick()">
+  <div class="card-indicator"></div>
+  <div class="card-body">
+    <span class="badge-text">{{ badgeText }}</span>
+    <h3 class="card-title">{{ title }}</h3>
+    
+    @if (time) {
+      <p class="card-info">
+        <svg class="info-icon" viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" stroke-width="2" fill="none">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        Hora: {{ time }}
+      </p>
+    }
+
+    @if (description) {
+      <p class="card-info description-text">
+        {{ description }}
+      </p>
+    }
+  </div>
+</div>

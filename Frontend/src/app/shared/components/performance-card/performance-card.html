@@ -1,0 +1,41 @@
+<div class="performance-row">
+  <!-- Columna Periodo / Bimestre -->
+  <div class="col-period">
+    <span class="period-title">{{ periodName }}</span>
+  </div>
+
+  <!-- Columna Tipo de Actividad -->
+  <div class="col-type">
+    <span class="mobile-label">Tipo:</span>
+    <span>{{ activityType }}</span>
+  </div>
+
+  <!-- Columna Fecha -->
+  <div class="col-date">
+    <span class="mobile-label">Fecha:</span>
+    <span class="text-slate">{{ date }}</span>
+  </div>
+
+  <!-- Columna Nota -->
+  <div class="col-grade">
+    <span class="mobile-label">Nota:</span>
+    <span class="grade-value" [class.empty-grade]="grade === '—'">{{ grade }}</span>
+  </div>
+
+  <!-- Columna Peso -->
+  <div class="col-weight">
+    <span class="mobile-label">Peso:</span>
+    <span class="text-slate">{{ weight }}</span>
+  </div>
+
+  <!-- Columna Estado con etiquetas dinámicas estilizadas -->
+  <div class="col-status">
+    <span class="status-badge" [ngClass]="{
+      'badge-approved': status === 'Aprobado',
+      'badge-review': status === 'En revisión',
+      'badge-failed': status === 'Reprobado'
+    }">
+      {{ status }}
+    </span>
+  </div>
+</div>
