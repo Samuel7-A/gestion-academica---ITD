@@ -24,13 +24,13 @@ Las imágenes se incorporarán después de ejecutar las pruebas correspondientes
 **Enlace del prototipo:**
 https://www.figma.com/design/N9pqg2g4Hl1hS5Ooc1LFCj/Gestión-Académica-Docente---APF3
 
-### Pantallas diseñadas
+### Pantallas del prototipo Figma
 
-1. Inicio de sesión.
-2. Panel principal del docente.
-3. Cursos y estudiantes.
-4. Registro de calificaciones.
-5. Predicciones académicas mediante Machine Learning.
-6. Generación de grupos.
+1. figma-01-login.png: Inicio de sesión.
+2. figma-02-dashboard.png: Panel principal del docente.
+3. figma-03-cursos.png: Cursos y estudiantes.
+4. figma-04-calificaciones.png: Registro de calificaciones.
+5. figma-05-predicciones.png: Predicciones académicas.
+6. figma-06-grupos.png: Generación de grupos.
 
-El prototipo presenta una interfaz móvil adaptable, con identidad visual uniforme y navegación interactiva entre los módulos de la plataforma.
+Las capturas corresponden a las seis pantallas diseñadas en Figma.
