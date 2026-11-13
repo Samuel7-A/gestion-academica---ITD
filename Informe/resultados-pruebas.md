@@ -12,7 +12,7 @@ Documentar los resultados obtenidos durante la ejecución de los casos de prueba
 
 ## 2. Entorno de pruebas
 
-Las pruebas se realizarán considerando el siguiente entorno tecnológico:
+Las pruebas se realizaron considerando el siguiente entorno tecnológico:
 
 - Frontend: Angular y TypeScript.
 - Backend: Python y FastAPI.
