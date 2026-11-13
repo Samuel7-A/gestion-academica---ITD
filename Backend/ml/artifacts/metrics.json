@@ -1,0 +1,78 @@
+{
+  "warning": "Todas las observaciones son sintéticas; métricas NO validan su rendimiento real.",
+  "seed": 20261113,
+  "features": [
+    "grade_bimester_1",
+    "grade_bimester_2",
+    "attendance_pct",
+    "homework_pct",
+    "participation_pct",
+    "previous_average"
+  ],
+  "training_records_2023_2024": 240,
+  "test_records_2025": 120,
+  "unlabeled_current_records_2026": 80,
+  "regression": {
+    "mae": 0.6571,
+    "rmse": 0.8114
+  },
+  "classification": {
+    "accuracy": 0.8583,
+    "f1_macro": 0.8384,
+    "labels": [
+      "alto",
+      "moderado",
+      "bajo"
+    ],
+    "confusion_matrix": [
+      [
+        37,
+        7,
+        0
+      ],
+      [
+        1,
+        20,
+        7
+      ],
+      [
+        0,
+        2,
+        46
+      ]
+    ],
+    "report": {
+      "alto": {
+        "precision": 0.9736842105263158,
+        "recall": 0.8409090909090909,
+        "f1-score": 0.9024390243902439,
+        "support": 44.0
+      },
+      "moderado": {
+        "precision": 0.6896551724137931,
+        "recall": 0.7142857142857143,
+        "f1-score": 0.7017543859649122,
+        "support": 28.0
+      },
+      "bajo": {
+        "precision": 0.8679245283018868,
+        "recall": 0.9583333333333334,
+        "f1-score": 0.9108910891089109,
+        "support": 48.0
+      },
+      "accuracy": 0.8583333333333333,
+      "macro avg": {
+        "precision": 0.8437546370806652,
+        "recall": 0.8378427128427129,
+        "f1-score": 0.8383614998213557,
+        "support": 120.0
+      },
+      "weighted avg": {
+        "precision": 0.865106895410289,
+        "recall": 0.8583333333333333,
+        "f1-score": 0.8589934346451334,
+        "support": 120.0
+      }
+    }
+  }
+}
