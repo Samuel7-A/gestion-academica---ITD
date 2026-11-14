@@ -1,0 +1,8 @@
+.report-cards{display:grid;grid-template-columns:repeat(2,minmax(215px,290px));gap:15px;align-items:stretch}
+.report-card{padding:18px;display:flex;align-items:flex-start;flex-direction:column;gap:7px;min-height:190px}
+.report-icon{height:36px;width:36px;display:grid;place-items:center;border-radius:9px;background:#eaf1fc;color:#305ea5;font-size:22px;line-height:1}
+.report-card h2{font-size:14px;margin-top:2px}
+.report-card p{font-size:12px;color:#64748b;line-height:1.5;flex:1}
+.report-card .academic-btn{width:100%;margin-top:4px}
+.report-footer{margin-top:10px;line-height:1.5}
+@media(max-width:650px){.report-cards{grid-template-columns:1fr}.report-card{min-height:0}}

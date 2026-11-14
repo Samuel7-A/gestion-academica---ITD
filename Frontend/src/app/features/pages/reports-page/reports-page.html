@@ -1,0 +1,69 @@
+<div class="academic-view reports-view">
+  <div class="academic-heading">
+    <div><h1>Reportes</h1><p>Genera y descarga reportes académicos</p></div>
+    @if (api.hasSession) { <button class="academic-btn quiet" type="button" (click)="api.logout()">Cambiar docente</button> }
+  </div>
+  @if (!api.hasSession) {
+    <app-api-session (connected)="load()"></app-api-session>
+  } @else {
+    <div class="academic-toolbar">
+      <div class="academic-field"><label for="report-course">Curso asociado</label>
+        <select id="report-course" class="academic-select" [(ngModel)]="selectedSectionId">
+          @for (section of filteredSections; track section.id) {
+            <option [value]="section.id">{{ section.course_name }} · {{ section.grade_level }} {{ section.section_name }} ({{ section.year }})</option>
+          }
+        </select>
+      </div>
+      <div class="academic-field"><label for="report-grade">Grado educativo</label>
+        <select id="report-grade" class="academic-select" [(ngModel)]="selectedGrade" (change)="onGradeChange()">
+          <option value="todos">Todos los grados</option>
+          @for (grade of grades; track grade) { <option [value]="grade">{{ grade }}</option> }
+        </select>
+      </div>
+      <button class="academic-btn secondary" type="button" (click)="load()" [disabled]="loading">Actualizar</button>
+    </div>
+    @if (error) { <div class="academic-error" role="alert">{{ error }}</div> }
+    @if (info) { <div class="academic-note">{{ info }}</div> }
+    @if (loading) { <div class="academic-spinner">Cargando cursos…</div> }
+    <div class="report-cards">
+      <article class="academic-card report-card">
+        <div class="report-icon" aria-hidden="true">▤</div>
+        <h2>Reporte de notas</h2>
+        <p>Consolidado de calificaciones parciales y promedio actual.</p>
+        <button class="academic-btn" type="button" (click)="generate('Notas')" [disabled]="!selectedSectionId || !!busy">
+          {{ busy === 'Notas' ? 'Generando…' : 'Generar CSV' }}
+        </button>
+      </article>
+      <article class="academic-card report-card">
+        <div class="report-icon" aria-hidden="true">▦</div>
+        <h2>Reporte de asistencia</h2>
+        <p>Indicadores de asistencia disponibles en el módulo académico.</p>
+        <button class="academic-btn" type="button" (click)="generate('Asistencia')" [disabled]="!selectedSectionId || !!busy">
+          {{ busy === 'Asistencia' ? 'Generando…' : 'Generar CSV' }}
+        </button>
+      </article>
+    </div>
+    <section>
+      <div class="academic-section-title"><h2>Historial de reportes generados</h2><span class="academic-small">Guardado en este navegador</span></div>
+      <div class="academic-table-wrap">
+        <table class="academic-table">
+          <thead><tr><th>Tipo</th><th>Curso</th><th>Fecha de generación</th><th>Estado</th><th>Acción</th></tr></thead>
+          <tbody>
+            @for (report of visibleHistory; track report.id) {
+              <tr>
+                <td class="strong">Reporte de {{ report.type.toLowerCase() }}</td>
+                <td>{{ report.course }}</td>
+                <td>{{ displayDate(report.generatedAt) }}</td>
+                <td><span class="academic-pill listo">Listo</span></td>
+                <td><button class="academic-btn secondary" type="button" (click)="download(report)">↧ Descargar</button></td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="academic-empty">Todavía no hay reportes generados para este curso.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <p class="academic-small report-footer">Los archivos se descargan como CSV compatible con Excel. El historial queda solo en el navegador; no existe todavía un endpoint de reportes en FastAPI.</p>
+    </section>
+  }
+</div>

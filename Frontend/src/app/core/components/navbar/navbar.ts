@@ -13,13 +13,13 @@ export class NavbarComponent {
   isMobileOpen = false;
 
   menuItems = [
-    { label: 'Cursos', route: '/courses' },
-    { label: 'Registro de calificaciones', route: '/courses/grades' },
-    { label: 'Notas', route: '/courses/performance' },
-    { label: 'Exámenes', route: '/courses/exams' },
-    { label: 'Reportes', route: '/courses/reports' },
-    { label: 'Indicadores de riesgo', route: '/courses/risks' },
-    { label: 'Horario', route: '/courses/schedule' }
+    { label: 'Cursos', route: '/principal/courses' },
+    { label: 'Registro de calificaciones', route: '/principal/courses/grades' },
+    { label: 'Notas', route: '/principal/courses/performance' },
+    { label: 'Exámenes', route: '/principal/courses/exams' },
+    { label: 'Reportes', route: '/principal/courses/reports' },
+    { label: 'Indicadores de riesgo', route: '/principal/courses/risks' },
+    { label: 'Horario', route: '/principal/courses/schedule' }
   ];
 
   toggleMobileMenu(): void {

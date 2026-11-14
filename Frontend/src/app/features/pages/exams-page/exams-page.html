@@ -1,0 +1,85 @@
+<div class="academic-view exams-view">
+  <div class="academic-heading">
+    <div><h1>Exámenes</h1><p>Calendario y estado de evaluaciones</p></div>
+    @if (api.hasSession) { <button class="academic-btn" type="button" (click)="newExam()" [disabled]="!sections.length">+ Programar examen</button> }
+  </div>
+  @if (!api.hasSession) {
+    <app-api-session (connected)="load()"></app-api-session>
+  } @else {
+    @if (error) { <div class="academic-error" role="alert">{{ error }}</div> }
+    @if (notice) { <div class="academic-note" role="status">{{ notice }}</div> }
+    <div class="exams-grid">
+      <section class="exams-main">
+        <div class="academic-toolbar">
+          <div class="academic-field"><label for="exam-course">Filtrar por curso</label>
+            <select id="exam-course" class="academic-select" [(ngModel)]="selectedCourse"><option value="todos">Todos los cursos</option>
+              @for (section of sections; track section.id) { <option [value]="section.id">{{ section.course_name }} · {{ section.grade_level }} {{ section.section_name }} ({{ section.year }})</option> }
+            </select>
+          </div>
+          <div class="academic-field"><label for="exam-status">Estado</label>
+            <select id="exam-status" class="academic-select" [(ngModel)]="selectedStatus">
+              <option value="todos">Todos los estados</option><option value="pendiente">Pendiente</option><option value="realizado">Realizado</option><option value="cancelado">Cancelado</option><option value="sin-fecha">Sin fecha</option>
+            </select>
+          </div>
+          <button class="academic-btn secondary" type="button" (click)="load()" [disabled]="loading">Actualizar</button>
+        </div>
+        @if (loading) { <p class="academic-spinner">Consultando evaluaciones…</p> }
+        <div class="academic-table-wrap">
+          <table class="academic-table">
+            <thead><tr><th>Examen</th><th>Curso</th><th>Fecha</th><th>Hora</th><th>Aula</th><th>Estado</th><th>Acción</th></tr></thead>
+            <tbody>
+              @for (e of filteredExams; track e.activity.id) {
+                <tr>
+                  <td class="strong">{{ e.activity.title }} <span class="academic-small">· B{{ e.activity.bimester }}</span></td>
+                  <td>{{ e.section.course_name }} {{ e.section.grade_level }} {{ e.section.section_name }}</td>
+                  <td>{{ formatDate(e.schedule?.date || '') }}</td>
+                  <td>{{ e.schedule?.time || '—' }}</td>
+                  <td>{{ e.schedule?.room || '—' }}</td>
+                  <td><span class="academic-pill" [ngClass]="statusOf(e)">{{ statusName(e) }}</span></td>
+                  <td><button type="button" class="academic-btn quiet" (click)="editExam(e)">{{ e.schedule ? 'Editar' : 'Programar' }}</button></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="7" class="academic-empty">No se encontraron exámenes para estos filtros.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <aside class="next-exam">
+        <span class="next-kicker">▧ PRÓXIMO EXAMEN DESTACADO</span>
+        @if (nextExam; as e) {
+          <h2>{{ e.activity.title }}</h2>
+          <p>{{ e.section.course_name }} · {{ e.section.grade_level }} {{ e.section.section_name }}</p>
+          <div class="next-details"><span>◷ {{ formatDate(e.schedule?.date || '') }}</span><span>◷ {{ e.schedule?.time || 'Sin hora' }}</span><span>⌂ Aula: {{ e.schedule?.room || 'Por definir' }}</span></div>
+          <p class="next-tip">Revisa las indicaciones del curso antes de rendir el examen.</p>
+        } @else {
+          <h2>Sin exámenes próximos</h2><p>No hay evaluaciones futuras con fecha y estado pendiente registrados.</p>
+          <p class="next-tip">Puedes programar un examen desde el botón superior.</p>
+        }
+      </aside>
+    </div>
+    @if (showEditor) {
+      <section class="academic-card exam-editor" aria-label="Programación del examen">
+        <div class="academic-section-title"><h2>{{ editActivityId ? 'Editar programación' : 'Nuevo examen' }}</h2>
+          <button class="academic-btn quiet" type="button" (click)="showEditor = false">Cerrar ×</button>
+        </div>
+        <form class="exam-form" (ngSubmit)="save()">
+          <div class="academic-field"><label for="edit-course">Curso</label>
+            <select id="edit-course" class="academic-select" name="course" [(ngModel)]="form.sectionId" [disabled]="!!editActivityId" required>
+              @for (s of sections; track s.id) { <option [value]="s.id">{{ s.course_name }} · {{ s.grade_level }} {{ s.section_name }} ({{ s.year }})</option> }
+            </select>
+          </div>
+          <div class="academic-field grow"><label for="edit-title">Nombre del examen</label><input id="edit-title" name="title" class="academic-input" [(ngModel)]="form.title" [readOnly]="!!editActivityId" maxlength="150" required></div>
+          <div class="academic-field"><label for="edit-bimester">Bimestre</label><select id="edit-bimester" name="bimester" class="academic-select" [(ngModel)]="form.bimester" [disabled]="!!editActivityId"><option [ngValue]="1">1</option><option [ngValue]="2">2</option><option [ngValue]="3">3</option><option [ngValue]="4">4</option></select></div>
+          <div class="academic-field"><label for="edit-date">Fecha</label><input id="edit-date" name="date" class="academic-input" type="date" [(ngModel)]="form.date" required></div>
+          <div class="academic-field"><label for="edit-time">Hora</label><input id="edit-time" name="time" class="academic-input" type="time" [(ngModel)]="form.time" required></div>
+          <div class="academic-field"><label for="edit-room">Aula</label><input id="edit-room" name="room" class="academic-input" [(ngModel)]="form.room" placeholder="Ej. Aula 302" maxlength="60"></div>
+          <div class="academic-field"><label for="edit-state">Estado</label><select id="edit-state" name="state" class="academic-select" [(ngModel)]="form.status"><option value="pendiente">Pendiente</option><option value="realizado">Realizado</option><option value="cancelado">Cancelado</option></select></div>
+          <button class="academic-btn" type="submit" [disabled]="saving">{{ saving ? 'Guardando…' : 'Guardar examen' }}</button>
+        </form>
+        <p class="academic-small">La actividad y el bimestre se registran en FastAPI. Fecha, hora, aula y estado se almacenan solo en este navegador hasta que César implemente el calendario en la API.</p>
+      </section>
+    }
+    <p class="academic-small">Se muestran las actividades de examen registradas en la base de datos. No se inventan fechas ni aulas: puedes programarlas de forma local para la demostración.</p>
+  }
+</div>
