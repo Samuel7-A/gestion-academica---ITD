@@ -1,88 +1,100 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CustomButtonComponent } from '../../../shared/components/custom-button/custom-button';
-import { CustomInputComponent } from '../../../shared/components/custom-input/custom-input';
+import { ActivatedRoute, Router } from '@angular/router';
 
-interface StudentGrade {
-  id: number;
-  name: string;
-  act1: number;
-  act2: number;
-  act3: number;
-}
+
+import { Activity } from '../../../models/activity';
+import { AcademicoService } from '../../../services/academico-api.service';
+import { CustomButtonComponent } from '../../../shared/components/custom-button/custom-button';
 
 @Component({
   selector: 'app-grades-page',
   standalone: true,
-  imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    CustomButtonComponent, 
-    CustomInputComponent
-  ],
+  imports: [CommonModule, CustomButtonComponent],
   templateUrl: './grades-pages.html',
   styleUrls: ['./grades-pages.css']
 })
-export class GradesPageComponent {
-  private fb = inject(FormBuilder);
+export class GradesPageComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private academService = inject(AcademicoService);
 
-  isEditing = false;
-  lastSavedText = 'Guardado automático · hace 2 min';
+  isLoading = signal<boolean>(true);
+  courseSectionId = signal<string | null>(null);
 
-  initialStudents: StudentGrade[] = [
-    { id: 1, name: 'Ana Torres', act1: 16, act2: 14, act3: 17 },
-    { id: 2, name: 'Bruno Lima', act1: 12, act2: 15, act3: 13 },
-    { id: 3, name: 'Carla Rojas', act1: 18, act2: 17, act3: 19 },
-    { id: 4, name: 'Diego Salas', act1: 10, act2: 12, act3: 11 },
-    { id: 5, name: 'Elena Vidal', act1: 15, act2: 16, act3: 14 },
-    { id: 6, name: 'Fabián Cruz', act1: 17, act2: 18, act3: 16 }
-  ];
+  activities = signal<Activity[]>([]);
+  studentsList = signal<any[]>([]);
+  courseInfo = signal<any>(null);
 
-  gradesForm: FormGroup = this.fb.group({
-    students: this.fb.array(
-      this.initialStudents.map(student => this.createStudentGroup(student))
-    )
-  });
-
-  get studentsArray(): FormArray {
-    return this.gradesForm.get('students') as FormArray;
-  }
-
-  private createStudentGroup(student: StudentGrade): FormGroup {
-    return this.fb.group({
-      id: [student.id],
-      name: [student.name],
-      act1: [student.act1, [Validators.required, Validators.min(0), Validators.max(20)]],
-      act2: [student.act2, [Validators.required, Validators.min(0), Validators.max(20)]],
-      act3: [student.act3, [Validators.required, Validators.min(0), Validators.max(20)]]
+  ngOnInit(): void {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.courseSectionId.set(id);
+        this.cargarGradebook(id);
+      }
     });
   }
 
-  getAverage(index: number): string {
-    const group = this.studentsArray.at(index);
-    const n1 = Number(group.get('act1')?.value) || 0;
-    const n2 = Number(group.get('act2')?.value) || 0;
-    const n3 = Number(group.get('act3')?.value) || 0;
-    return ((n1 + n2 + n3) / 3).toFixed(1);
+  cargarGradebook(sectionId: string): void {
+    this.isLoading.set(true);
+
+    this.academService.getGradebook(sectionId).subscribe({
+      next: (response) => {
+        // Asignamos la información del curso, actividades y estudiantes desde el JSON del servidor
+        this.courseInfo.set(response.course_section || null);
+        this.activities.set(Array.isArray(response.activities) ? response.activities : []);
+        this.studentsList.set(Array.isArray(response.students) ? response.students : []);
+
+        this.isLoading.set(false);
+      },
+      error: (err) => {
+        console.error('Error al cargar el gradebook:', err);
+        this.activities.set([]);
+        this.studentsList.set([]);
+        this.isLoading.set(false);
+      }
+    });
   }
 
-  toggleEdit(): void {
-    if (this.isEditing && this.gradesForm.invalid) {
-      this.gradesForm.markAllAsTouched();
-      return;
-    }
-    this.isEditing = !this.isEditing;
-    if (!this.isEditing) {
-      this.lastSavedText = 'Guardado automático · hace un momento';
-    }
+  // Método auxiliar para buscar la nota de un estudiante según el ID de la actividad
+  getGradeForActivity(student: any, activityId: string): number | null {
+    if (!student.grades || !Array.isArray(student.grades)) return null;
+    const found = student.grades.find((g: any) => g.activity_id === activityId);
+    return found ? found.value : 0;
   }
 
-  onImport(): void {
-    console.log('Importar notas');
+  goBack(): void {
+    this.router.navigate(['/principal/courses']);
   }
 
   onExport(): void {
-    console.log('Exportar reporte:', this.gradesForm.value);
+    console.log('Exportar reporte de notas');
+  }
+
+  // Signal o variable para almacenar el promedio general de todos los estudiantes de la tabla
+  generalClassAverage = signal<string>('0.00');
+
+  // Estado para el botón de editar
+  isEditing = false;
+
+  // Método para calcular el promedio global de la tabla
+  calcularPromedioGeneral(students: any[]): void {
+    if (!Array.isArray(students) || students.length === 0) {
+      this.generalClassAverage.set('0.00');
+      return;
+    }
+
+    const sumaTotal = students.reduce((acc, student) => {
+      return acc + (Number(student.current_average) || 0);
+    }, 0);
+
+    const promedio = sumaTotal / students.length;
+    this.generalClassAverage.set(promedio.toFixed(2));
+  }
+
+  // Alternar el estado de edición al presionar el botón
+  toggleEdit(): void {
+    this.isEditing = !this.isEditing;
   }
 }

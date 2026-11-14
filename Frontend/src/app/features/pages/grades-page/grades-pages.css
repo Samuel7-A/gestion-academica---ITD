@@ -1,51 +1,81 @@
+/* --- Layout General Tipo App (Fijo y Limpio) --- */
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background-color: #f8fafc;
+  overflow: hidden;
 }
 
 .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  height: 100%;
+  overflow-y: auto; /* Scroll interno fluido solo si la página excede el alto */
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f1f5f9;
 }
 
+.main-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+
+/* Contenedor principal de la página */
 .page-body {
   padding: 2rem 2.5rem;
-  max-width: 1400px;
+  max-width: 1500px;
   width: 100%;
   margin: 0 auto;
+  box-sizing: border-box;
 }
 
+/* --- Barra de Acciones Superior --- */
 .actions-toolbar {
   display: flex;
   justify-content: flex-end;
-  gap: 0.75rem;
-  margin-bottom: 1.25rem;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
 }
 
-/* Tarjeta de tabla con sombra fina y bordes redondeados */
+/* --- Tarjeta de Tabla (Elegante y Estilizada) --- */
 .table-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -2px rgba(0, 0, 0, 0.02);
 }
 
-/* CONTENEDOR RESPONSIVO: Permite scroll fluido en celulares sin romper la estructura */
+/* Contenedor responsivo con scroll horizontal suave para tablas anchas */
 .table-responsive {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
 }
 
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+}
+
+/* --- Estructura y Tipografía de la Tabla --- */
 .grades-table {
   width: 100%;
-  min-width: 600px; /* Asegura que la tabla no se comprima demasiado */
+  min-width: 700px;
   border-collapse: collapse;
   text-align: center;
+  font-family: inherit;
 }
 
 .grades-table thead {
@@ -54,20 +84,32 @@
 }
 
 .grades-table th {
-  padding: 1rem 1.25rem;
-  font-size: 0.78rem;
-  font-weight: 600;
+  padding: 1.15rem 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
   color: #475569;
-  letter-spacing: 0.2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   white-space: nowrap;
 }
 
+.grades-table th small.bimester-tag {
+  font-size: 0.68rem;
+  color: #3b82f6;
+  font-weight: 600;
+  margin-left: 0.25rem;
+  background: #eff6ff;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
 .grades-table td {
-  padding: 0.85rem 1.25rem;
-  font-size: 0.85rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.875rem;
   color: #334155;
   border-bottom: 1px solid #f1f5f9;
   white-space: nowrap;
+  transition: background-color 0.15s ease;
 }
 
 .grades-table tbody tr:last-child td {
@@ -78,76 +120,106 @@
   background-color: #f8fafc;
 }
 
+/* Columnas Específicas */
+.col-code {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.8rem;
+  width: 100px;
+}
+
 .col-student {
   text-align: left !important;
-  font-weight: 500;
-  color: #1e293b;
-  min-width: 160px;
+  font-weight: 600;
+  color: #0f172a;
+  min-width: 200px;
 }
 
 .col-average {
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+/* --- Insignias Finas para Notas y Promedios --- */
+.grade-badge {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   font-weight: 600;
-  color: #0f172a;
+  color: #334155;
+  font-size: 0.85rem;
+  min-width: 45px;
 }
 
-/* --- ADAPTACIÓN PERFECTA DEL CUSTOM-INPUT EN LA TABLA --- */
-.grade-input {
-  width: 100%;
-  max-width: 70px;
-  margin: 0 auto;
+.average-badge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  background-color: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  color: #1d4ed8;
+  font-weight: 700;
+  font-size: 0.9rem;
 }
 
-.grade-input .input-wrapper {
-  gap: 0;
+/* Estado Vacío */
+.empty-row {
+  text-align: center;
+  padding: 3rem 1rem !important;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  font-style: italic;
 }
 
-.grade-input .custom-input-field {
-  width: 100% !important;
-  padding: 0.4rem 0.2rem !important;
-  text-align: center !important;
-  font-size: 0.85rem !important;
-  font-weight: 600 !important;
-  border-radius: 8px !important;
-  border-color: #93c5fd !important;
-  background-color: #ffffff !important;
+.loading-state {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #64748b;
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
-.grade-input .custom-input-field:focus {
-  border-color: #254e9b !important;
-  box-shadow: 0 0 0 3px rgba(37, 78, 155, 0.12) !important;
-}
-
-/* Controles inferiores */
+/* --- Controles Inferiores y Estado --- */
 .bottom-controls {
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.btn-edit {
-  padding: 0.65rem 1.25rem;
-  font-size: 0.78rem;
-  letter-spacing: 0.4px;
-}
-
-.backup-banner {
-  background-color: #ecfdf5;
-  color: #047857;
-  border: 1px solid #d1fae5;
-  padding: 0.65rem 1.15rem;
-  border-radius: 10px;
-  font-size: 0.78rem;
+.status-info-box {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  color: #64748b;
   font-weight: 500;
 }
 
-/* --- MEDIA QUERIES PARA CELULARES (<= 768px) --- */
-@media (max-width: 768px) {
-  .app-layout {
-    flex-direction: column;
-  }
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
 
+.backup-banner {
+  background-color: #f8fafc;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* --- Adaptación Responsiva para Celulares y Tablets (<= 768px) --- */
+@media (max-width: 768px) {
   .page-body {
     padding: 1.25rem 1rem;
   }
@@ -157,16 +229,17 @@
     width: 100%;
   }
 
-  .actions-toolbar .btn {
+  .actions-toolbar app-custom-button {
     width: 100%;
-    text-align: center;
   }
 
   .bottom-controls {
-    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
   }
 
-  .btn-edit {
-    width: 100%;
+  .status-info-box {
+    justify-content: center;
   }
 }

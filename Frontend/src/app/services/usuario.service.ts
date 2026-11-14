@@ -1,86 +1,79 @@
-import { inject, Injectable } from "@angular/core";
-import { docenteEspecialidadMock } from "../data/mock-docente-especialidad";
-import { especialidadesMock } from "../data/mock-especialidad";
-import { usuariosMock } from "../data/mock-usuario";
-import { DocenteEspecialidad } from "../models/docente-especialidad.model";
-import { Especialidad } from "../models/especialidad.model";
-import { Usuario } from "../models/usuario.model";
-import { Observable, of } from "rxjs";
+import { inject, Injectable, signal } from "@angular/core";
+import { ACADEMIC_API_URL } from "../core/config/api.config";
+import { HttpClient } from "@angular/common/http";
+import { Usuario } from "../models/usuario";
+import { Observable, tap } from "rxjs";
 
+interface LoginRequest{
+  email: string,
+  password: string
+}
+
+interface AuthResponse{
+  access_token : string,
+  token_type : string,
+  expires_in : 0,
+  user : Usuario
+}
 
 @Injectable({
   providedIn: 'root'
 })
 
 export class UsuarioService {
-  private usuariosDB: Usuario[] = [...usuariosMock];
-  private asignacionesDB: DocenteEspecialidad[] = [...docenteEspecialidadMock];
+  private readonly http = inject(HttpClient);
+  private readonly api = `${ACADEMIC_API_URL}/auth`;
 
-  // Obtener catálogo predefinido para el <select>
-  getCatalogoEspecialidades(): Observable<Especialidad[]> {
-    const activas = especialidadesMock.filter(e => e.activo);
-    return of(activas);
-  }
+  // 1. Signal privado que recupera el usuario guardado de forma segura
+  private currentUserSignal = signal<Usuario | null>(this.getStoredUser());
 
-  // Obtener lista de docentes
-  getAll(): Observable<Usuario[]> {
-    return of([...this.usuariosDB]);
-  }
+  // 2. Signal público de solo lectura para consumir en la app
+  public readonly currentUser = this.currentUserSignal.asReadonly();
 
-  // Obtener las especialidades asignadas a un docente (simula JOIN)
-  getEspecialidadesPorDocente(usuarioId: string): Observable<DocenteEspecialidad[]> {
-    const asignaciones = this.asignacionesDB.filter(a => a.usuarioId === usuarioId && a.activo);
-    
-    const pobladas = asignaciones.map(asignacion => ({
-      ...asignacion,
-      especialidad: especialidadesMock.find(e => e.id === asignacion.especialidadId)
-    }));
-
-    return of(pobladas);
-  }
-
-  // Guardar nueva especialidad en la tabla intermedia
-  asignarEspecialidad(
-    datos: Omit<DocenteEspecialidad, 'id' | 'usuario' | 'especialidad'>
-  ): Observable<DocenteEspecialidad> {
-    const nuevaAsignacion: DocenteEspecialidad = {
-      ...datos,
-      id: `de-${Date.now()}`
-    };
-    this.asignacionesDB.push(nuevaAsignacion);
-    return of(nuevaAsignacion);
-  }
-
-   getById(id: string): Observable<Usuario | undefined> {
-    // TODO: Reemplazar con: return this.http.get<Usuario>(`${this.apiUrl}/${id}`);
-    const docente = this.usuariosDB.find(u => u.id === id);
-    return of(docente);
-  }
-
-  // Buscar un docente por su correo electrónico
-  getByCorreo(correo: string): Observable<Usuario | undefined> {
-    // TODO: Reemplazar con: return this.http.get<Usuario>(`${this.apiUrl}/buscar?correo=${correo}`);
-    const correoNormalizado = correo.trim().toLowerCase();
-    const docente = this.usuariosDB.find(
-      u => u.correo.trim().toLowerCase() === correoNormalizado
+  /**
+   * Inicia sesión, persiste el token y el usuario, y actualiza el signal reactivo.
+   */
+  login(credenciales: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.api}/login`, credenciales).pipe(
+      tap((respuesta) => {
+        if (respuesta.access_token) {
+          localStorage.setItem('auth_token', respuesta.access_token);
+          localStorage.setItem('current_user', JSON.stringify(respuesta.user));
+          this.currentUserSignal.set(respuesta.user);
+        }
+      })
     );
-    return of(docente);
   }
 
-  // Crear un nuevo docente
-  newUsuario(datos: Omit<Usuario, 'id' | 'activo'>): Observable<Usuario> {
-  // TODO: Cuando conectes el backend, reemplaza esto por:
-  // return this.http.post<Usuario>(this.apiUrl, datos);
+  /**
+   * Cierra la sesión limpiando el almacenamiento local y reseteando el signal.
+   */
+  logout(): void {
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('current_user');
+    this.currentUserSignal.set(null);
+  }
 
-  const nuevoDocente: Usuario = {
-    ...datos,
-    id: `usr-${Date.now()}`,
-    activo: true
-  };
+  /**
+   * Getter síncrono para verificar rápidamente si existe una sesión activa.
+   */
+  get hasSession(): boolean {
+    return !!localStorage.getItem('auth_token');
+  }
 
-  this.usuariosDB.push(nuevoDocente);
-  return of(nuevoDocente);
-}
-
-
+  /**
+   * Método auxiliar privado para recuperar el usuario de manera segura ante fallos de parseo.
+   */
+  private getStoredUser(): Usuario | null {
+    const userStr = localStorage.getItem('current_user');
+    if (!userStr) return null;
+    
+    try {
+      return JSON.parse(userStr) as Usuario;
+    } catch (error) {
+      console.error('Error al parsear el usuario almacenado en localStorage:', error);
+      localStorage.removeItem('current_user'); // Limpieza preventiva si el JSON está corrupto
+      return null;
+    }
+  }
 }

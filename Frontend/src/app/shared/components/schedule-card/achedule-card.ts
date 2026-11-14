@@ -9,11 +9,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./schedule-card.css']
 })
 export class ScheduleCardComponent {
-  @Input({ required: true }) badgeText!: string;     // Ej: "CURSO - MARTES", "ACTIVIDAD - MIERCOLES"
+  badgeText!: "Curso - Actividades";     // Ej: "CURSO - MARTES", "ACTIVIDAD - MIERCOLES"
   @Input({ required: true }) title!: string;         // Ej: "Matematicas 5°A", "Geometria 2°B"
-  @Input() time?: string;                            // Ej: "Hora: 2:00 pm a 3:30 pm"
-  @Input() description?: string;                     // Ej: "Presentación de Formar Poligona.."
-  
+  @Input() bimestre?: number;                            // Ej: "Hora: 2:00 pm a 3:30 pm"  
   @Output() cardClick = new EventEmitter<void>();
 
   onClick(): void {

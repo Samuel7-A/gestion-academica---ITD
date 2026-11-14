@@ -1,14 +1,9 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout';
+import { authGuard } from './core/guard/auth.guard';
 
 export const routes: Routes = [
   // Rutas públicas (Login / Registro)
-  {
-    path:'',
-    redirectTo: 'auth/login',
-    pathMatch: 'full'
-  },
-
   {
     path: 'auth/login',
     loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent)
@@ -22,13 +17,15 @@ export const routes: Routes = [
   {
     path: 'principal',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
+    canActivateChild: [authGuard],
     children: [
       {
         path: 'courses',
         loadComponent: () => import('./features/pages/course-page/courses-page').then(m => m.CoursesPageComponent)
       },
       {
-        path: 'courses/grades',
+        path: 'courses/grades/:id',
         loadComponent: () => import('./features/pages/grades-page/grades-pages').then(m  => m.GradesPageComponent)
       },
       {
@@ -54,14 +51,7 @@ export const routes: Routes = [
       }
     ]
   },
-
-  { path: 'courses', redirectTo: 'principal/courses', pathMatch: 'full' },
-  { path: 'courses/grades', redirectTo: 'principal/courses/grades', pathMatch: 'full' },
-  { path: 'courses/performance', redirectTo: 'principal/courses/performance', pathMatch: 'full' },
-  { path: 'courses/exams', redirectTo: 'principal/courses/exams', pathMatch: 'full' },
-  { path: 'courses/reports', redirectTo: 'principal/courses/reports', pathMatch: 'full' },
-  { path: 'courses/risks', redirectTo: 'principal/courses/risks', pathMatch: 'full' },
-
+ 
   {
     path: '**',
     redirectTo: 'principal/courses'

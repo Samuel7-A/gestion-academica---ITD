@@ -1,8 +1,20 @@
 <header class="topbar">
-  <div class="header-titles">
-    <h1>{{ title }}</h1>
-    <p>{{ subtitle }}</p>
-  </div>
+<div class="header-titles">
+  <h1>
+    @if (userService.currentUser(); as user) {
+      @if (user.role === 'teacher') {
+        Bienvenido Docente
+      } @else if (user.role === 'admin') {
+        Bienvenido Admin
+      } @else {
+        Bienvenido
+      }
+    } @else {
+      Cargando...
+    }
+  </h1>
+  <p>Plataforma de Gestiòn Docente</p>
+</div>
 
   <div class="topbar-right">
     @if (showAutosave && lastSavedText) {

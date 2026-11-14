@@ -2,30 +2,9 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { ACADEMIC_API_URL } from '../core/config/api.config';
+import { CourseSection } from '../models/courseSection';
+import { Activity } from '../models/activity';
 
-// Contratos exactamente alineados con los esquemas de Backend/app/schemas.py.
-export interface CourseSection {
-  id: string;
-  course_id: string;
-  course_name: string;
-  section_id: string;
-  year: number;
-  grade_level: string;
-  section_name: string;
-  teacher_id: string;
-  student_count: number;
-}
-export interface Student {
-  id: string;
-  code: string;
-  full_name: string;
-}
-export interface AcademicActivity {
-  id: string;
-  course_section_id: string;
-  bimester: number;
-  title: string;
-}
 export interface GradebookRow {
   student_id: string;
   code: string;
@@ -36,9 +15,16 @@ export interface GradebookRow {
 }
 export interface Gradebook {
   course_section: CourseSection;
-  activities: AcademicActivity[];
+  activities: Activity[];
   students: GradebookRow[];
 }
+
+export interface LoginResponse { 
+  access_token: string; 
+  token_type: string; 
+  expires_in: number; 
+}
+
 export interface Prediction {
   student_id: string;
   course_section_id: string;
@@ -55,7 +41,7 @@ export interface Prediction {
     previous_average: number;
   };
 }
-interface LoginResponse { access_token: string; token_type: string; expires_in: number; }
+
 
 @Injectable({ providedIn: 'root' })
 export class AcademicApiService {
@@ -81,11 +67,11 @@ export class AcademicApiService {
   sections(): Observable<CourseSection[]> {
     return this.http.get<CourseSection[]>(`${this.api}/course-sections`, this.options());
   }
-  activities(sectionId: string): Observable<AcademicActivity[]> {
-    return this.http.get<AcademicActivity[]>(`${this.api}/course-sections/${encodeURIComponent(sectionId)}/activities`, this.options());
+  activities(sectionId: string): Observable<Activity[]> {
+    return this.http.get<Activity[]>(`${this.api}/course-sections/${encodeURIComponent(sectionId)}/activities`, this.options());
   }
-  createActivity(sectionId: string, title: string, bimester: number): Observable<AcademicActivity> {
-    return this.http.post<AcademicActivity>(`${this.api}/course-sections/${encodeURIComponent(sectionId)}/activities`, { title, bimester }, this.options());
+  createActivity(sectionId: string, title: string, bimester: number): Observable<Activity> {
+    return this.http.post<Activity>(`${this.api}/course-sections/${encodeURIComponent(sectionId)}/activities`, { title, bimester }, this.options());
   }
   gradebook(sectionId: string): Observable<Gradebook> {
     return this.http.get<Gradebook>(`${this.api}/course-sections/${encodeURIComponent(sectionId)}/gradebook`, this.options());

@@ -1,7 +1,21 @@
-@keyframes fadeInScale {
+:root {
+  --primary-color: #3b82f6;
+  --primary-hover: #2563eb;
+  --bg-main: #f8fafc;
+  --card-bg: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animaciones fluidas de entrada */
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -13,193 +27,314 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  width: 100%;
-  animation: fadeInScale 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  padding: 1.75rem;
+  box-sizing: border-box;
+  background-color: var(--bg-main);
+  height: 100%;
+  overflow-y: auto;
+  animation: fadeInUp 0.4s ease-out;
 }
 
-/* --- Barra de Filtros --- */
-.filters-toolbar {
+/* ========================================== */
+/* BARRA DE FILTROS MODERNA                   */
+/* ========================================== */
+.performance-view .filters-toolbar {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
   display: grid;
-  grid-template-columns: 1fr 1.2fr 2fr;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1.25rem;
   align-items: flex-end;
-  background-color: #ffffff;
-  padding: 1.25rem 1.5rem;
-  border-radius: 16px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04);
+  transition: var(--transition-smooth);
 }
 
-.filter-group {
+.performance-view .filters-toolbar:hover {
+  box-shadow: 0 6px 24px -2px rgba(15, 23, 42, 0.07);
+}
+
+.performance-view .filters-toolbar .filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.performance-view .filters-toolbar .filter-group .filter-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.performance-view .filters-toolbar .filter-group .select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.performance-view .filters-toolbar .filter-group .select-wrapper::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--text-muted);
+  pointer-events: none;
+}
+
+.performance-view .filters-toolbar .filter-group .filter-select {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #f8fafc;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.7rem 2.5rem 0.7rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.performance-view .filters-toolbar .filter-group .filter-select:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.performance-view .filters-toolbar .filter-group .filter-select:focus {
+  outline: none;
+  background-color: #ffffff;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* ========================================== */
+/* CUADRO ESTADÍSTICO POR BIMESTRES           */
+/* ========================================== */
+.performance-view .bimester-stats-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+.performance-view .bimester-stats-section .section-title-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.performance-view .bimester-stats-section .section-title-wrapper .section-heading {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.performance-view .bimester-stats-section .section-title-wrapper .section-subtitle {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+@media (max-width: 1024px) {
+  .performance-view .bimester-stats-section .bimester-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .performance-view .bimester-stats-section .bimester-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  opacity: 0.7;
+  transition: var(--transition-smooth);
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px -6px rgba(15, 23, 42, 0.08);
+  border-color: #cbd5e1;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card:hover::before {
+  opacity: 1;
+  height: 4px;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-top .bim-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-top .bim-activities-count {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-body {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-body .score-display {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-body .score-display .score-num {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-body .score-display .score-max {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-body .bim-status-text {
+  font-size: 0.8rem;
+  color: #334155;
+  margin: 0.4rem 0 0 0;
+  font-weight: 600;
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-footer {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
 }
 
-.filter-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #64748b;
-  letter-spacing: 0.05em;
-}
-
-.select-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-}
-
-.filter-select {
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-footer .progress-bar-container {
   width: 100%;
-  padding: 0.75rem 1rem;
-  background-color: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  font-size: 0.9rem;
-  color: #1e293b;
-  font-weight: 500;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-}
-
-.filter-select:hover {
-  border-color: #94a3b8;
-}
-
-.filter-select:focus {
-  border-color: #254e9b;
-  box-shadow: 0 0 0 3px rgba(37, 78, 155, 0.12);
-}
-
-/* --- Tabla Contenedora --- */
-.table-card {
-  background-color: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  height: 7px;
+  background: #f1f5f9;
+  border-radius: 4px;
   overflow: hidden;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-footer .progress-bar-container .progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.performance-view .bimester-stats-section .bimester-cards-grid .bimester-card .card-footer .progress-percentage-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-align: right;
+  font-weight: 500;
+}
+
+/* ========================================== */
+/* ESTADOS DE CARGA Y VACÍO                   */
+/* ========================================== */
+.performance-view .loading-state, 
+.performance-view .empty-state {
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border-color);
+}
+
+/* Responsividad móvil general */
+@media (max-width: 640px) {
+  .performance-view {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .performance-view .filters-toolbar {
+    padding: 1rem;
+  }
+}
+
+/* Contenedor principal de la tabla */
+.table-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: var(--radius-lg, 16px);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
 }
 
 .table-responsive {
   width: 100%;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
+/* Fila de cabecera alineada por Grid */
 .table-header-row {
   display: grid;
-  grid-template-columns: 1.8fr 1fr 1.2fr 0.8fr 0.8fr 1.2fr;
-  padding: 1rem 1.5rem;
+  grid-template-columns: 1.2fr 1.5fr 1fr 0.8fr 0.8fr 1.2fr;
+  align-items: center;
+  padding: 1rem 1.25rem;
   background-color: #f8fafc;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border-color, #e2e8f0);
   font-size: 0.75rem;
   font-weight: 700;
-  color: #475569;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-/* --- Tarjeta Inferior de Resumen --- */
-.summary-card {
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.5rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01);
-}
-
-.summary-info {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.summary-icon-box {
-  width: 44px;
-  height: 44px;
-  background-color: #eff6ff;
-  color: #254e9b;
-  border: 1px solid #dbeafe;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.summary-text h3 {
-  font-size: 1rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 0.15rem 0;
-}
-
-.summary-text p {
-  font-size: 0.825rem;
-  color: #64748b;
-  margin: 0;
-}
-
-.summary-score {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.score-label {
-  font-size: 0.68rem;
-  font-weight: 700;
-  color: #64748b;
+  color: var(--text-muted, #64748b);
   letter-spacing: 0.05em;
-}
-
-.score-value {
-  font-size: 1.65rem;
-  font-weight: 800;
-  color: #254e9b;
-  letter-spacing: -0.02em;
-}
-
-/* --- Responsividad Adaptativa --- */
-@media (max-width: 1024px) {
-  .filters-toolbar {
-    grid-template-columns: 1fr 1fr;
-  }
-  .search-group {
-    grid-column: span 2;
-  }
-}
-
-@media (max-width: 768px) {
-  .filters-toolbar {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
-  .search-group {
-    grid-column: span 1;
-  }
-  .table-header-row {
-    display: none; /* Oculta la cabecera estándar en celulares para dar paso al diseño de tarjeta individual */
-  }
-  .summary-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1.25rem;
-    padding: 1.25rem;
-  }
-  .summary-score {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid #e2e8f0;
-    padding-top: 0.75rem;
-  }
+  text-transform: uppercase;
+  gap: 1rem;
 }

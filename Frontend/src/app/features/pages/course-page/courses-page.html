@@ -1,46 +1,60 @@
 <div class="app-layout">
-
   <main class="main-content">
-
     <div class="dashboard-grid">
+      
       <!-- Sección Izquierda: Cursos -->
       <section class="courses-section">
         <div class="section-header">
           <h1>Mis cursos</h1>
           <p>Bienvenido, Docente</p>
         </div>
-
-        <div class="courses-grid">
-        @for (course of courses; track $index) {
-          <app-course-card 
-            [courseName]="course.name"
-            [studentsCount]="course.students"
-            (cardClick)="onSelectCurse()"
+          <div class="courses-grid">
+          @for (course of courses(); track course.id) {
+            <app-course-card 
+              [courseName]="course.course_name"
+              [studentsCount]="course.student_count"
+              (cardClick)="onSelectCurse(course.id)"
             ></app-course-card>
-        }
-        </div>
+          }
+        </div>        
       </section>
 
       <!-- Sección Derecha: Actividades Semanales -->
       <aside class="activities-sidebar">
-        <div class="activities-card">
-          <h2>Actividades Semanales</h2>
-          <div class="activities-list">
+        <!-- Botón para desplegar/cerrar en dispositivos móviles -->
+        <button class="activities-toggle-btn" (click)="toggleActivitiesMobile()">
+          <div class="toggle-title-group">
+            <span class="toggle-icon">📌</span>
+            <span>Actividades Semanales</span>
+          </div>
+          <span class="arrow-icon" [class.open]="isActivitiesOpen">▼</span>
+        </button>
 
-            @for (item of activities; track $index) {
-              <app-schedule-card
-                [badgeText]="item.type"
-                [title]="item.title"
-                [time]="item.day"
-                [description]="item.detail"
-                >
-                </app-schedule-card>
-            }
+        <div class="activities-card" [class.mobile-open]="isActivitiesOpen">
+          <div class="activities-card-header">
+            <h2>Actividades Semanales</h2>
+            <span class="activities-badge">{{ actividades().length }}</span>
+          </div>
 
-
+          <!-- Contenedor con Scroll Interno Fino -->
+          <div class="activities-scroll-container">
+            <div class="activities-list">
+              @for (activida of actividades(); track $index) {
+                <app-schedule-card
+                  [title]="activida.title"
+                  [bimestre]="activida.bimester"
+                  (cardClick)="irACurso()"
+                ></app-schedule-card>
+              } @empty {
+                <div class="empty-state">
+                  <p>No hay actividades programadas.</p>
+                </div>
+              }
+            </div>
           </div>
         </div>
       </aside>
+
     </div>
   </main>
 </div>

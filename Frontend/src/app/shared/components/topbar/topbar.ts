@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { UsuarioService } from '../../../services/usuario.service';
 
 @Component({
   selector: 'app-topbar',
@@ -9,9 +10,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./topbar.css']
 })
 export class TopbarComponent {
-  @Input({ required: true }) title!: string;
-  @Input({ required: true }) subtitle!: string;
   @Input() lastSavedText?: string;
   @Input() userInitial: string = 'D';
   @Input() showAutosave: boolean = false;
+
+  public readonly userService = inject(UsuarioService);
+
 }

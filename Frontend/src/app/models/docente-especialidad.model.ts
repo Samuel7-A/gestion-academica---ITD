@@ -1,5 +1,5 @@
 import type { Especialidad } from './especialidad.model';
-import type { Usuario } from './usuario.model';
+import type { Usuario } from './usuario';
 
 /** Asociación temporal de docentes y especialidades para mock local. */
 export interface DocenteEspecialidad {

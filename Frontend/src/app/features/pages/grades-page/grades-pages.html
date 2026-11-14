@@ -1,92 +1,81 @@
 <div class="app-layout">
   <main class="main-content">
     <div class="page-body">
+      
+      <!-- Barra de Acciones Superior -->
       <div class="actions-toolbar">
         <app-custom-button
-          text="Importar"
-          (clicked)="onImport()"
+          text="Volver a Cursos"
+          (clicked)="goBack()"
           customClass="btn-outline"
-          [disabled]="isEditing"
-          ></app-custom-button>
-          <app-custom-button
-            text="Exportar reporte"
-            customClass="btn-primary"
-            (clicked)="onExport()"
-            [disabled]="isEditing"
-            ></app-custom-button>
+        ></app-custom-button>
+        
+        <app-custom-button
+          text="Exportar reporte"
+          customClass="btn-primary"
+          (clicked)="onExport()"
+        ></app-custom-button>
       </div>
 
-      <form [formGroup]="gradesForm" class="table-card">
-        <div class="table-responsive">
-          <table class="grades-table" formArrayName="students">
-            <thead>
-              <tr>
-                <th class="col-student">Estudiante</th>
-                <th>Act. 1</th>
-                <th>Act. 2</th>
-                <th>Act. 3</th>
-                <th>Promedio</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (studentGroup of studentsArray.controls; track $index; let i = $index) {
-                <tr [formGroupName]="i">
-                  <td class="col-student">{{ studentGroup.get('name')?.value }}</td>
+      <!-- Tarjeta Contenedora de la Tabla -->
+      <div class="table-card">
+        @if (isLoading()) {
+          <div class="loading-state">Cargando registro de calificaciones...</div>
+        } @else {
+          <div class="table-responsive">
+            <table class="grades-table">
+              <thead>
+                <tr>
+                  <th class="col-code">Código</th>
+                  <th class="col-student">Estudiante</th>
                   
-                  <td>
-                    @if (isEditing) {
-                      <app-custom-input
-                        type="number"
-                        formControlName="act1"
-                        customClass="grade-input"
-                        ></app-custom-input>
-                    } @else { 
-                      <span>{{ studentGroup.get('act1')?.value }}</span>
+                  <!-- Cabeceras dinámicas con las actividades del JSON -->
+                  @if (activities()) {
+                    @for (activity of activities(); track activity.id) {
+                      <th>{{ activity.title }} <small class="bimester-tag">(B{{ activity.bimester }})</small></th>
                     }
-                  </td>
-
-                  <td>
-                    @if (isEditing) {
-                      <app-custom-input
-                        type="number"
-                        formControlName="act2"
-                        class="grade-input"
-                        ></app-custom-input>
-                    } @else {
-                      <span>{{ studentGroup.get('act2')?.value }}</span>
-                    }
-                  </td>
-
-                  <td>
-                    @if (isEditing) {
-                      <app-custom-input
-                        type="number"
-                        formControlName="act3"
-                        customClass="grade-input"
-                        ></app-custom-input>
-                    } @else {
-                      <span>{{ studentGroup.get('act3')?.value }}</span>
-                    }
-                  </td>
-
-                  <td class="col-average">{{ getAverage(i) }}</td>
+                  }
+                  
+                  <th class="col-average">Promedio (0-20)</th>
                 </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </form>
+              </thead>
+              <tbody>
+                @if (studentsList()) {
+                  @for (student of studentsList(); track student.student_id) {
+                    <tr>
+                      <td class="col-code">{{ student.code }}</td>
+                      <td class="col-student">{{ student.full_name }}</td>
+                      
+                      <!-- Celdas de notas iterando sobre las actividades y buscando en el arreglo -->
+                      @if (activities()) {
+                        @for (activity of activities(); track activity.id) {
+                          <td>
+                            <span class="grade-badge">
+                              {{ getGradeForActivity(student, activity.id) | number:'1.2-2' }}
+                            </span>
+                          </td>
+                        }
+                      }
 
-      <div class="bottom-controls">
-        <app-custom-button
-          text="{{isEditing ? 'GUARDAR NOTAS' : 'EICION DE NOTAS'}}"
-          type="button"
-          (clicked)="toggleEdit()"
-          ></app-custom-button>
-
-        <div class="backup-banner">
-          Respaldo y trazabilidad de cambios activa · último respaldo hace 2 min
-        </div>
+                      <!-- Promedio general directo que devuelve tu JSON -->
+                      <td class="col-average">
+                        <strong class="average-badge">
+                          {{ student.current_average | number:'1.2-2' }}
+                        </strong>
+                      </td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="10" class="empty-row">
+                        No hay estudiantes matriculados en esta sección.
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
       </div>
     </div>
   </main>

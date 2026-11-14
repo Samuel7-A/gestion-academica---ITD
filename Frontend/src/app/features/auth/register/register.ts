@@ -6,7 +6,7 @@ import { CustomButtonComponent } from '../../../shared/components/custom-button/
 import { CustomInputComponent } from '../../../shared/components/custom-input/custom-input';
 import { UsuarioService } from '../../../services/usuario.service';
 import { Especialidad } from '../../../models/especialidad.model';
-import { Usuario } from '../../../models/usuario.model';
+import { Usuario } from '../../../models/usuario';
 
 @Component({
   selector: 'app-register',
@@ -52,15 +52,7 @@ export class RegisterComponent {
   }
 
 
-  ngOnInit() {
-    this.cargarEspecialidades();
-  }
 
-  cargarEspecialidades() {
-    this.usuarioService.getCatalogoEspecialidades().subscribe(data => {
-      this.especialidadesList = data;
-    })
-  }
 
   isEspecialidadSelected(esp: Especialidad): boolean {
     return this.selectedEspecialidades.includes(esp);
@@ -80,7 +72,6 @@ export class RegisterComponent {
     };
     // Si tu interfaz Usuario no tiene la propiedad 'apellidos', la eliminamos del objeto
     delete (user as any).apellidos;
-    this.usuarioService.newUsuario(user);
     this.router.navigate(['/auth/login'])
   } else {
     this.registerForm.markAllAsTouched();

@@ -1,6 +1,8 @@
 .app-layout {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;         /* Fija exactamente la altura a la ventana visible en PC */
+  max-height: 100vh;     
+  overflow: hidden;      /* Sin scroll exterior en PC */
   background-color: #f8fafc;
 }
 
@@ -8,11 +10,39 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-x: hidden;
+  height: 100%;          
+  overflow: hidden;      /* Contiene el contenido en PC */
 }
 
+/* Contenedor donde vive el router-outlet */
+.page-container {
+  flex: 1;
+  overflow-y: auto;      /* Permite scroll interno si el contenido de la página excede el alto */
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+/* ========================================== */
+/* ADAPTABILIDAD PARA CELULARES (Móviles)     */
+/* ========================================== */
 @media (max-width: 768px) {
   .app-layout {
+    display: flex;
     flex-direction: column;
+    height: 100vh;       /* Mantiene la altura fija de la pantalla */
+    max-height: 100vh;
+    overflow: hidden;    /* Evita doble scroll general */
+  }
+
+  .main-content {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  /* Permitir scroll libre y natural exclusivamente dentro de las vistas en celular */
+  .page-container {
+    overflow-y: auto;    /* Habilita el scroll vertical fluido en móviles */
+    -webkit-overflow-scrolling: touch; /* Suaviza el desplazamiento inercial en iOS */
   }
 }

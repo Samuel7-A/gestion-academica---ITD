@@ -7,9 +7,9 @@
     <div class="filter-group">
       <label class="filter-label">CURSO</label>
       <div class="select-wrapper">
-        <select formControlName="selectedCourse" (change)="onFilterChange()" class="filter-select">
-          @for (course of courses; track course.id) {
-            <option [value]="course.name">{{ course.name }}</option>
+        <select formControlName="selectedCourse" class="filter-select">
+          @for (course of courses(); track course.id) {
+            <option [value]="course.id">{{ course.course_name || course.name }} (Sección {{ course.section_name }})</option>
           }
         </select>
       </div>
@@ -19,7 +19,7 @@
     <div class="filter-group">
       <label class="filter-label">TIPO DE ACTIVIDAD</label>
       <div class="select-wrapper">
-        <select formControlName="selectedActivityType" (change)="onFilterChange()" class="filter-select">
+        <select formControlName="selectedActivityType" class="filter-select">
           @for (type of activityTypes; track $index) {
             <option [value]="type">{{ type }}</option>
           }
@@ -39,7 +39,44 @@
 
   </form>
 
-  <!-- Tarjeta Contenedora de la Tabla / Bimestres -->
+  <!-- ========================================== -->
+  <!-- CUADRO ESTADÍSTICO DE LOS 4 BIMESTRES      -->
+  <!-- ========================================== -->
+  <div class="bimester-stats-section">
+    <div class="section-title-wrapper">
+      <h2 class="section-heading">Resumen Estadístico por Bimestres</h2>
+      <span class="section-subtitle">Métricas calculadas sobre escala vigesimal (0.00 - 20.00)</span>
+    </div>
+
+    <div class="bimester-cards-grid">
+      @for (stat of bimesterStats(); track stat.bimesterNumber) {
+        <div class="bimester-card">
+          <div class="card-top">
+            <span class="bim-badge">Bimestre {{ stat.bimesterNumber }}</span>
+            <span class="bim-activities-count">{{ stat.totalActivities }} Actividades</span>
+          </div>
+          
+          <div class="card-body">
+            <div class="score-display">
+              <span class="score-num">{{ stat.averageScore }}</span>
+              <span class="score-max">/20</span>
+            </div>
+            <p class="bim-status-text">{{ stat.statusLabel }}</p>
+          </div>
+
+          <!-- Barra de progreso visual del promedio -->
+          <div class="card-footer">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" [style.width.%]="stat.progressPercentage"></div>
+            </div>
+            <span class="progress-percentage-label">{{ stat.progressPercentage }}% del estándar</span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Tarjeta Contenedora de la Tabla -->
   <div class="table-card">
     <div class="table-responsive">
       
@@ -53,22 +90,32 @@
         <span>Estado</span>
       </div>
 
-      <!-- Iteración y aplicación del componente para cada bimestre -->
-      @for (item of performanceList; track $index) {
-        <app-performance-card 
-          [periodName]="item.periodName" 
-          [activityType]="item.activityType" 
-          [date]="item.date" 
-          [grade]="item.grade" 
-          [weight]="item.weight" 
-          [status]="item.status">
-        </app-performance-card>
+      <!-- Iteración de la lista filtrada -->
+      @if (isLoading()) {
+        <div class="loading-state">
+          Cargando rendimiento académico...
+        </div>
+      } @else {
+        @for (item of performanceList(); track $index) {
+          <app-performance-card 
+            [periodName]="item.periodName" 
+            [activityType]="item.activityType" 
+            [date]="item.date" 
+            [grade]="item.grade" 
+            [weight]="item.weight" 
+            [status]="item.status">
+          </app-performance-card>
+        } @empty {
+          <div class="empty-state">
+            No se encontraron registros que coincidan con los filtros.
+          </div>
+        }
       }
 
     </div>
   </div>
 
-  <!-- Tarjeta de Resumen y Rendimiento Ponderado -->
+  <!-- Tarjeta de Resumen y Rendimiento Ponderado Global -->
   <div class="summary-card">
     <div class="summary-info">
       <div class="summary-icon-box">
@@ -86,14 +133,14 @@
         </svg>
       </div>
       <div class="summary-text">
-        <h3>Resumen de Rendimiento de Matemática</h3>
-        <p>Promedio calculado en base al peso de las actividades calificadas a la fecha.</p>
+        <h3>Promedio Ponderado General del Curso</h3>
+        <p>Calculado automáticamente en base a las calificaciones acumuladas de los estudiantes en la sección.</p>
       </div>
     </div>
     
     <div class="summary-score">
-      <span class="score-label">PROMEDIO PONDERADO</span>
-      <span class="score-value">15.2</span>
+      <span class="score-label">PROMEDIO GLOBAL</span>
+      <span class="score-value">{{ generalWeightedAverage() }}</span>
     </div>
   </div>
 
