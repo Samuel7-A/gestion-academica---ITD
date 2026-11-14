@@ -11,6 +11,7 @@ import { Observable, of } from "rxjs";
 @Injectable({
   providedIn: 'root'
 })
+
 export class UsuarioService {
   private usuariosDB: Usuario[] = [...usuariosMock];
   private asignacionesDB: DocenteEspecialidad[] = [...docenteEspecialidadMock];
