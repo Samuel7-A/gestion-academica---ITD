@@ -1,0 +1,18 @@
+<section class="connection-card" aria-label="Acceso al backend académico">
+  <span class="connection-icon">↗</span>
+  <div class="connection-body">
+    <h2>Conectar con el backend académico</h2>
+    <p>Estas tres pantallas leen datos desde FastAPI. Inicia sesión con un docente de la base de demostración para utilizarlas.</p>
+    <form (ngSubmit)="connect()" class="connection-form">
+      <label>Correo del docente
+        <input type="email" name="email" [(ngModel)]="email" autocomplete="username" placeholder="docente1@demo.edu.pe" required>
+      </label>
+      <label>Contraseña
+        <input type="password" name="password" [(ngModel)]="password" autocomplete="current-password" required>
+      </label>
+      <button type="submit" [disabled]="busy">{{ busy ? 'Conectando…' : 'Conectar a FastAPI' }}</button>
+    </form>
+    @if (error) { <p class="connection-error" role="alert">{{ error }}</p> }
+    <p class="connection-note">Este acceso temporal no reemplaza el login que está desarrollando Sebastián. No se guardan contraseñas en el navegador.</p>
+  </div>
+</section>

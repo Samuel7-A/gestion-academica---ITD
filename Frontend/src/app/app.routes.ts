@@ -6,6 +6,11 @@ export const routes: Routes = [
   {
     path:'',
     redirectTo: 'auth/login',
+    pathMatch: 'full'
+  },
+
+  {
+    path: 'auth/login',
     loadComponent: () => import('./features/auth/login/login').then(m => m.LoginComponent)
   },
   {
@@ -31,6 +36,18 @@ export const routes: Routes = [
         loadComponent:() => import('./features/pages/grades-performance/grades-performance').then(m => m.GradesPerformanceComponent)
       },
       {
+        path: 'courses/exams',
+        loadComponent: () => import('./features/pages/exams-page/exams-page').then(m => m.ExamsPageComponent)
+      },
+      {
+        path: 'courses/reports',
+        loadComponent: () => import('./features/pages/reports-page/reports-page').then(m => m.ReportsPageComponent)
+      },
+      {
+        path: 'courses/risks',
+        loadComponent: () => import('./features/pages/risks-page/risks-page').then(m => m.RisksPageComponent)
+      },
+      {
         path: '',
         redirectTo: 'courses',
         pathMatch: 'full'
@@ -38,8 +55,15 @@ export const routes: Routes = [
     ]
   },
 
+  { path: 'courses', redirectTo: 'principal/courses', pathMatch: 'full' },
+  { path: 'courses/grades', redirectTo: 'principal/courses/grades', pathMatch: 'full' },
+  { path: 'courses/performance', redirectTo: 'principal/courses/performance', pathMatch: 'full' },
+  { path: 'courses/exams', redirectTo: 'principal/courses/exams', pathMatch: 'full' },
+  { path: 'courses/reports', redirectTo: 'principal/courses/reports', pathMatch: 'full' },
+  { path: 'courses/risks', redirectTo: 'principal/courses/risks', pathMatch: 'full' },
+
   {
     path: '**',
-    redirectTo: 'courses'
+    redirectTo: 'principal/courses'
   }
 ];

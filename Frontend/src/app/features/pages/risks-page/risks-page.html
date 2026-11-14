@@ -1,0 +1,51 @@
+<div class="academic-view risks-view">
+  <div class="academic-heading">
+    <div><h1>Indicadores de riesgo académico</h1><p>Basados en asistencia, promedio, cumplimiento y modelos predictivos</p></div>
+    @if (api.hasSession) { <button class="academic-btn secondary" type="button" (click)="export()" [disabled]="!visibleRows.length">↧ Exportar CSV</button> }
+  </div>
+  @if (!api.hasSession) {
+    <app-api-session (connected)="loadSections()"></app-api-session>
+  } @else {
+    <div class="academic-toolbar">
+      <div class="academic-field"><label for="risk-course">Curso - grado</label>
+        <select id="risk-course" class="academic-select" [(ngModel)]="selectedSectionId" (change)="loadRows()">
+          @for (section of sections; track section.id) {
+            <option [value]="section.id">{{ section.course_name }} · {{ section.grade_level }} {{ section.section_name }} ({{ section.year }})</option>
+          }
+        </select>
+      </div>
+      <div class="academic-field"><label for="risk-status">Estado</label>
+        <select id="risk-status" class="academic-select" [(ngModel)]="selectedRisk">
+          <option value="todos">Todos los estados</option><option value="bajo">Bajo</option><option value="moderado">Medio</option><option value="alto">Alto</option><option value="sin-dato">Sin dato</option>
+        </select>
+      </div>
+      <button class="academic-btn secondary" type="button" (click)="loadRows()" [disabled]="loadingRows || !selectedSectionId">Actualizar</button>
+    </div>
+    <div class="academic-note">Indicadores demostrativos calculados con datos sintéticos. Los niveles de riesgo no representan diagnósticos ni decisiones académicas oficiales.</div>
+    @if (error) { <div class="academic-error" role="alert">{{ error }}</div> }
+    @if (loadingSections || loadingRows) { <div class="academic-spinner">Consultando registros académicos y ejecutando las predicciones…</div> }
+    <div class="academic-table-wrap">
+      <table class="academic-table risks-table">
+        <thead><tr><th>Estudiante</th><th>Asistencia</th><th>Promedio</th><th>Cumplimiento</th><th>Riesgo</th><th>Nota proyectada</th></tr></thead>
+        <tbody>
+          @for (row of visibleRows; track row.id) {
+            <tr>
+              <td class="strong">{{ row.name }} <span class="risk-code">{{ row.code }}</span></td>
+              <td>{{ percent(row.attendance) }}</td>
+              <td>{{ grade(row.average) }}</td>
+              <td>{{ compliance(row.homework) }}</td>
+              <td><span class="academic-pill" [ngClass]="row.risk === 'sin-dato' ? 'sin-fecha' : row.risk">{{ riskLabel(row.risk) }}</span></td>
+              <td>{{ grade(row.projected) }}</td>
+            </tr>
+          } @empty {
+            <tr><td class="academic-empty" colspan="6">{{ loadingRows ? 'Cargando estudiantes…' : 'No hay estudiantes para los filtros seleccionados.' }}</td></tr>
+          }
+        </tbody>
+        @if (visibleRows.length) {
+          <tfoot><tr class="risk-summary"><th>Promedio (filtrado)</th><th>{{ percent(meanAttendance) }}</th><th>{{ grade(meanGrade) }}</th><th>—</th><th>{{ countHigh }} altos / {{ countModel }} evaluados</th><th>—</th></tr></tfoot>
+        }
+      </table>
+    </div>
+    <p class="academic-small">Promedio: promedio actual del registro de notas. Cumplimiento: porcentaje de tareas, clasificado para su visualización (Alto ≥80%, Medio ≥60%, Bajo &lt;60%). El riesgo y la nota proyectada provienen de los modelos del backend; si no hay datos suficientes se muestra «Sin dato».</p>
+  }
+</div>

@@ -1,0 +1,17 @@
+.exams-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:20px;align-items:start}
+.exams-main{min-width:0;display:flex;flex-direction:column;gap:13px}
+.exams-view .academic-table{min-width:710px}
+.exams-view .academic-table th,.exams-view .academic-table td{padding:12px 10px}
+.next-exam{border-radius:13px;background:#24437f;color:#fff;padding:21px;display:flex;flex-direction:column;gap:13px;min-height:230px}
+.next-kicker{font-size:10px;font-weight:750;letter-spacing:.065em;color:#e1ebff}
+.next-exam h2{font-size:20px;font-weight:750;line-height:1.23;letter-spacing:-.02em}
+.next-exam>p{font-size:12px;color:#d7e5ff;line-height:1.5}
+.next-details{display:flex;flex-direction:column;gap:8px;font-size:12px;color:#f0f6ff}
+.next-exam .next-tip{margin-top:auto;padding-top:11px;border-top:1px solid rgba(255,255,255,.16);font-size:11px}
+.exam-editor{padding:19px}
+.exam-form{display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin:12px 0}
+.exam-form>.academic-btn{margin-bottom:1px}
+.exam-editor .academic-small{line-height:1.5}
+@media(max-width:1180px){.exams-grid{grid-template-columns:minmax(0,1fr)}.next-exam{min-height:0}}
+@media(max-width:650px){.exam-form{display:grid;grid-template-columns:1fr 1fr}.exam-form .grow{grid-column:1/-1}.exam-form>.academic-btn{grid-column:1/-1}}
+@media(max-width:440px){.exam-form{grid-template-columns:1fr}}

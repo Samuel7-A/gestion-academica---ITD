@@ -1,0 +1,8 @@
+.risks-view{gap:15px}
+.risks-view .academic-heading{margin-bottom:5px}
+.risks-table{min-width:730px}
+.risks-table tbody tr:hover{background:#f9fbfe}
+.risk-code{font-size:10px;color:#94a3b8;font-weight:450;margin-left:6px}
+.risk-summary{background:#f7f9fd}
+.risk-summary th{border-top:1px solid #dbe4ef;font-size:12px;color:#334155;padding:15px 14px}
+.risks-view>.academic-small{line-height:1.5}

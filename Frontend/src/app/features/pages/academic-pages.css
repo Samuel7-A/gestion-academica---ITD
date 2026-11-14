@@ -1,0 +1,39 @@
+/* Continuidad visual con los componentes de Sebastián: blanco, azul marino, bordes tenues y radios de 12–16 px. */
+.academic-view{display:flex;flex-direction:column;gap:23px;width:100%;max-width:1540px;margin:0 auto;padding:30px 34px 45px;animation:academic-enter .26s ease-out}
+@keyframes academic-enter{from{opacity:.6;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.academic-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.academic-heading h1{font-size:22px;line-height:1.35;color:#14213d;font-weight:750;letter-spacing:-.025em}
+.academic-heading p{color:#64748b;font-size:13px;margin-top:4px}
+.academic-note{background:#eff6ff;border:1px solid #dbeafe;border-radius:9px;color:#385786;padding:10px 13px;font-size:12px;line-height:1.5}
+.academic-toolbar{display:flex;gap:16px;align-items:end;flex-wrap:wrap}
+.academic-field{display:flex;flex-direction:column;gap:6px;min-width:160px;flex:0 1 auto}
+.academic-field.grow{flex:1;min-width:220px}
+.academic-field label{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:#64748b;font-weight:700}
+.academic-input,.academic-select{height:38px;min-width:0;max-width:100%;border:1px solid #d5deeb;border-radius:8px;background:#fff;color:#334155;font-size:13px;padding:8px 11px;outline:0}
+.academic-input:focus,.academic-select:focus{border-color:#315ba4;box-shadow:0 0 0 3px rgba(49,91,164,.11)}
+.academic-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:#315ba4;color:#fff;padding:9px 16px;border-radius:8px;border:1px solid #315ba4;font-size:12px;font-weight:700;cursor:pointer;min-height:36px;transition:background .16s ease}
+.academic-btn:hover:not(:disabled){background:#274b88}.academic-btn:disabled{opacity:.5;cursor:not-allowed}
+.academic-btn.secondary{background:#fff;color:#315ba4;border-color:#c7d6ec}.academic-btn.secondary:hover:not(:disabled){background:#eff6ff}
+.academic-btn.quiet{background:transparent;color:#315ba4;border-color:transparent;padding:7px 10px}.academic-btn.quiet:hover{background:#eff6ff}
+.academic-card{background:#fff;border:1px solid #e2e8f0;border-radius:13px;box-shadow:0 2px 12px rgba(15,23,42,.018)}
+.academic-card h2{font-size:15px;font-weight:700;color:#172b52}
+.academic-section-title{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:11px;flex-wrap:wrap}
+.academic-section-title h2{font-size:15px;font-weight:700;color:#1b2f53}
+.academic-table-wrap{overflow-x:auto;width:100%;border:1px solid #e2e8f0;border-radius:12px;background:#fff}
+.academic-table{border-collapse:collapse;width:100%;min-width:680px;text-align:left}
+.academic-table thead{background:#f7f9fd}.academic-table th{font-size:11px;color:#475569;font-weight:700;padding:13px 14px;white-space:nowrap}
+.academic-table td{font-size:12px;color:#334155;padding:13px 14px;border-top:1px solid #e9eef5;vertical-align:middle}
+.academic-table tbody tr:hover{background:#fcfdff}.academic-table tbody tr:last-child td{border-bottom:0}
+.academic-table .strong{font-weight:650;color:#1e293b}
+.academic-pill{display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:4px 9px;font-size:10px;font-weight:700;white-space:nowrap;background:#e2e8f0;color:#475569}
+.academic-pill.bajo,.academic-pill.realizado,.academic-pill.listo{background:#e3f7ee;color:#08794a}
+.academic-pill.moderado,.academic-pill.pendiente{background:#fff5dc;color:#936014}
+.academic-pill.alto,.academic-pill.cancelado{background:#ffebed;color:#bf3345}
+.academic-pill.sin-fecha{background:#eef2f7;color:#64748b}
+.academic-empty{padding:24px;text-align:center;color:#64748b;font-size:13px}
+.academic-error{color:#b42336;font-size:12px;background:#fff1f2;border:1px solid #fecdd3;padding:11px 13px;border-radius:9px}
+.academic-small{font-size:11px;color:#64748b}
+.academic-kicker{font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.06em;color:#456ba9}
+.academic-spinner{font-size:12px;color:#64748b;padding:9px 0}
+@media(max-width:768px){.academic-view{padding:18px 15px 32px;gap:18px}.academic-toolbar{display:grid;grid-template-columns:1fr 1fr;gap:10px}.academic-field{min-width:0}.academic-field.grow{grid-column:1/-1;min-width:0}.academic-heading h1{font-size:19px}.academic-table td,.academic-table th{padding:11px 12px}}
+@media(max-width:450px){.academic-toolbar{grid-template-columns:1fr}}
