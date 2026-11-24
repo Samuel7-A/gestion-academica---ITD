@@ -3,6 +3,7 @@
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BACKEND_DIR = Path(__file__).resolve().parents[2]
@@ -21,6 +22,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    app_env: str = "development"  # development | production
     app_name: str = "API Gestión Académica APF3"
     api_v1_prefix: str = "/api/v1"
 
@@ -42,6 +44,21 @@ class Settings(BaseSettings):
 
     # Si es true, al iniciar el contenedor se cargan datos sintéticos de demostración.
     seed_demo_data: bool = False
+
+    @model_validator(mode="after")
+    def protect_production(self):
+        if self.app_env == "production":
+            if (self.jwt_secret_key == DEFAULT_JWT_SECRET or
+                    self.jwt_secret_key.startswith("cambia-") or len(self.jwt_secret_key) < 32):
+                raise ValueError("JWT_SECRET_KEY fuerte es obligatorio en producción")
+            if self.seed_demo_data:
+                raise ValueError("SEED_DEMO_DATA debe ser false en producción")
+            if self.database_url == DEFAULT_DATABASE_URL or "@localhost:" in self.database_url:
+                raise ValueError("DATABASE_URL externa es obligatoria en producción")
+            origins = self.cors_origins_list
+            if not origins or any(not url.startswith("https://") for url in origins):
+                raise ValueError("CORS_ORIGINS debe contener solo dominios HTTPS en producción")
+        return self
 
     @property
     def cors_origins_list(self) -> list[str]:
