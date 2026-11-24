@@ -1,0 +1,25 @@
+name: Validación Backend (relevo César)
+on:
+  pull_request:
+    paths:
+      - 'Backend/**'
+      - '.github/workflows/validacion-backend-relevo.yml'
+  push:
+    branches:
+      - 'feature/backend-relevo-samuel'
+    paths:
+      - 'Backend/**'
+      - '.github/workflows/validacion-backend-relevo.yml'
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Instalar dependencias
+        run: python -m pip install -r Backend/requirements-dev.txt -r Backend/ml/requirements.txt
+      - name: Ejecutar suite completa
+        working-directory: Backend
+        run: python -m pytest -q --disable-warnings

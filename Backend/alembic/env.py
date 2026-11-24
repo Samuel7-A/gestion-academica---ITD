@@ -5,6 +5,7 @@ from sqlalchemy import create_engine, pool
 
 from app.core.config import settings
 from app.models import Base
+from app import models_extra  # registra las tablas 0003 en el metadata
 
 config = context.config
 if config.config_file_name is not None and config.attributes.get("configure_logger", True):

@@ -1,0 +1,19 @@
+# Blueprint de DEMO académica con datos sintéticos. No crea PostgreSQL: usa Supabase.
+services:
+  - type: web
+    name: gestion-academica-api-demo
+    runtime: docker
+    dockerfilePath: ./Backend/Dockerfile
+    dockerContext: ./Backend
+    healthCheckPath: /api/v1/ready
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SEED_DEMO_DATA
+        value: 'false'
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
