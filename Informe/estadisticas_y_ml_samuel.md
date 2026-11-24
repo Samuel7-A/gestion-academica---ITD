@@ -1,7 +1,7 @@
 # Aporte de Samuel: Machine Learning, estadísticas y rendimiento
 
-**Proyecto:** Plataforma inteligente integrada para la gestión académica docente — I.E. Juventud Científica  
-**Propósito:** aportar pruebas técnicas y métricas verificables para el Proyecto Final.  
+**Proyecto:** Plataforma inteligente integrada para la gestión académica docente — I.E. Juventud Científica
+**Propósito:** aportar pruebas técnicas y métricas verificables para el Proyecto Final.
 **Fuente de datos:** **100 % sintética**. No hay validación con registros reales de estudiantes.
 
 ## 1. Modelos ML integrados
