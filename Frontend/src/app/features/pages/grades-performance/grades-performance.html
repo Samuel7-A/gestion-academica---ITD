@@ -1,9 +1,5 @@
 <div class="performance-view">
-  
-  <!-- Barra Superior de Filtros -->
   <form [formGroup]="filterForm" class="filters-toolbar">
-    
-    <!-- Selector de Curso -->
     <div class="filter-group">
       <label class="filter-label">CURSO</label>
       <div class="select-wrapper">
@@ -14,108 +10,66 @@
         </select>
       </div>
     </div>
-
-    <!-- Selector de Tipo de Actividad -->
     <div class="filter-group">
       <label class="filter-label">TIPO DE ACTIVIDAD</label>
       <div class="select-wrapper">
         <select formControlName="selectedActivityType" class="filter-select">
-          @for (type of activityTypes; track $index) {
-            <option [value]="type">{{ type }}</option>
-          }
+          @for (type of activityTypes; track $index) { <option [value]="type">{{ type }}</option> }
         </select>
       </div>
     </div>
-
-    <!-- Buscador General -->
     <div class="filter-group search-group">
       <label class="filter-label">BUSCAR</label>
-      <app-custom-input
-        formControlName="searchQuery"
-        placeholder="Buscar por nombre de actividad..."
-        customClass="search-input-override">
-      </app-custom-input>
+      <app-custom-input formControlName="searchQuery"
+        placeholder="Buscar por nombre de actividad..." customClass="search-input-override"></app-custom-input>
     </div>
-
   </form>
 
-  <!-- ========================================== -->
-  <!-- CUADRO ESTADÍSTICO DE LOS 4 BIMESTRES      -->
-  <!-- ========================================== -->
+  @if (errorMessage()) { <div class="empty-state" role="alert">{{ errorMessage() }}</div> }
+
   <div class="bimester-stats-section">
     <div class="section-title-wrapper">
-      <h2 class="section-heading">Resumen Estadístico por Bimestres</h2>
-      <span class="section-subtitle">Métricas calculadas sobre escala vigesimal (0.00 - 20.00)</span>
+      <h2 class="section-heading">Resumen estadístico por bimestres</h2>
+      <span class="section-subtitle">Datos sintéticos desde FastAPI · {{ totalStudents() }} estudiantes · {{ totalActivities() }} actividades · {{ gradesRecorded() }} notas registradas</span>
     </div>
-
     <div class="bimester-cards-grid">
       @for (stat of bimesterStats(); track stat.bimesterNumber) {
         <div class="bimester-card">
           <div class="card-top">
             <span class="bim-badge">Bimestre {{ stat.bimesterNumber }}</span>
-            <span class="bim-activities-count">{{ stat.totalActivities }} Actividades</span>
+            <span class="bim-activities-count">{{ stat.totalActivities }} actividades</span>
           </div>
-          
           <div class="card-body">
-            <div class="score-display">
-              <span class="score-num">{{ stat.averageScore }}</span>
-              <span class="score-max">/20</span>
-            </div>
+            <div class="score-display"><span class="score-num">{{ stat.averageScore }}</span><span class="score-max">/20</span></div>
             <p class="bim-status-text">{{ stat.statusLabel }}</p>
           </div>
-
-          <!-- Barra de progreso visual del promedio -->
           <div class="card-footer">
-            <div class="progress-bar-container">
-              <div class="progress-bar-fill" [style.width.%]="stat.progressPercentage"></div>
-            </div>
-            <span class="progress-percentage-label">{{ stat.progressPercentage }}% del estándar</span>
+            <div class="progress-bar-container"><div class="progress-bar-fill" [style.width.%]="stat.progressPercentage"></div></div>
+            <span class="progress-percentage-label">{{ stat.progressPercentage }} % de 20 puntos (solo notas disponibles)</span>
           </div>
         </div>
       }
     </div>
   </div>
 
-  <!-- Tarjeta Contenedora de la Tabla -->
   <div class="table-card">
     <div class="table-responsive">
-      
-      <!-- Cabecera de la Tabla -->
       <div class="table-header-row">
-        <span>Bimestres</span>
-        <span>Tipo</span>
-        <span>Fecha</span>
-        <span>Nota</span>
-        <span>Peso (%)</span>
-        <span>Estado</span>
+        <span>Bimestre</span><span>Actividad</span><span>Última nota</span><span>Promedio</span><span>Calificados</span><span>Estado</span>
       </div>
-
-      <!-- Iteración de la lista filtrada -->
       @if (isLoading()) {
-        <div class="loading-state">
-          Cargando rendimiento académico...
-        </div>
+        <div class="loading-state">Cargando estadísticas académicas...</div>
       } @else {
         @for (item of performanceList(); track $index) {
-          <app-performance-card 
-            [periodName]="item.periodName" 
-            [activityType]="item.activityType" 
-            [date]="item.date" 
-            [grade]="item.grade" 
-            [weight]="item.weight" 
-            [status]="item.status">
-          </app-performance-card>
+          <app-performance-card [periodName]="item.periodName" [activityType]="item.activityType"
+            [date]="item.date" [grade]="item.grade" [weight]="item.weight" [status]="item.status" />
         } @empty {
-          <div class="empty-state">
-            No se encontraron registros que coincidan con los filtros.
-          </div>
+          <div class="empty-state">No hay actividades con esos filtros.</div>
         }
       }
-
     </div>
   </div>
 
-  <!-- Tarjeta de Resumen y Rendimiento Ponderado Global -->
   <div class="summary-card">
     <div class="summary-info">
       <div class="summary-icon-box">
@@ -123,25 +77,14 @@
           <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
           <line x1="8" y1="6" x2="16" y2="6"></line>
           <line x1="16" y1="14" x2="16" y2="18"></line>
-          <path d="M8 10h.01"></path>
-          <path d="M12 10h.01"></path>
-          <path d="M16 10h.01"></path>
-          <path d="M8 14h.01"></path>
-          <path d="M12 14h.01"></path>
-          <path d="M8 18h.01"></path>
-          <path d="M12 18h.01"></path>
+          <path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"></path>
         </svg>
       </div>
       <div class="summary-text">
-        <h3>Promedio Ponderado General del Curso</h3>
-        <p>Calculado automáticamente en base a las calificaciones acumuladas de los estudiantes en la sección.</p>
+        <h3>Promedio general del curso</h3>
+        <p>Media de los promedios actuales de {{ studentsWithAverage() }} estudiantes con calificaciones; no es un promedio ponderado con pesos no disponibles en la API.</p>
       </div>
     </div>
-    
-    <div class="summary-score">
-      <span class="score-label">PROMEDIO GLOBAL</span>
-      <span class="score-value">{{ generalWeightedAverage() }}</span>
-    </div>
+    <div class="summary-score"><span class="score-label">PROMEDIO GLOBAL</span><span class="score-value">{{ generalWeightedAverage() }}</span></div>
   </div>
-
 </div>

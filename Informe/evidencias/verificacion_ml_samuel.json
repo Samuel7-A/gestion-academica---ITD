@@ -1,0 +1,25 @@
+{
+  "date_utc": "2026-11-24T05:42:59.128060+00:00",
+  "environment": "http://localhost:8000",
+  "checks": {
+    "health": "PASS",
+    "login": "PASS",
+    "authorization": "PASS",
+    "prediction": "PASS",
+    "group_integrity": "PASS"
+  },
+  "ml_mode": "model",
+  "model_version": "demo-v1",
+  "synthetic_data": true,
+  "section_id": "CS-2026-001",
+  "demo_student_id": "STU-001",
+  "predicted_final_grade": 16.2,
+  "risk_level": "bajo",
+  "group_sizes": [
+    5,
+    5,
+    5,
+    5
+  ],
+  "total_students": 20
+}

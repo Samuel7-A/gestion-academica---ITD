@@ -4,55 +4,36 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { AcademicoService } from '../../../services/academico-api.service';
 import { PerformanceCardComponent } from '../../../shared/components/performance-card/performance-card';
 import { CustomInputComponent } from '../../../shared/components/custom-input/custom-input';
-import { GradebookResponse, StudentGradebook } from '../../../models/Gradebook';
-
-interface BimesterStat {
-  bimesterNumber: number;
-  bimesterTitle: string;
-  averageScore: string;
-  totalActivities: number;
-  approvedCount: number;
-  statusLabel: string;
-  progressPercentage: number;
-}
-
+import { GradebookResponse } from '../../../models/Gradebook';
+import { analyzeGradebook, ActivityStatRow, BimesterSummary } from './grades-analytics';
 
 @Component({
   selector: 'app-grades-performance',
   standalone: true,
-  imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    PerformanceCardComponent, 
-    CustomInputComponent
-  ],
+  imports: [CommonModule, ReactiveFormsModule, PerformanceCardComponent, CustomInputComponent],
   templateUrl: './grades-performance.html',
   styleUrls: ['./grades-performance.css']
 })
-
 export class GradesPerformanceComponent implements OnInit {
   private fb = inject(FormBuilder);
   private academService = inject(AcademicoService);
 
-  // Estados reactivos
   courses = signal<any[]>([]);
-  performanceList = signal<any[]>([]); // Lista de actividades filtradas
-  bimesterStats = signal<BimesterStat[]>([]); // Estadísticas calculadas por bimestre
-  generalWeightedAverage = signal<string>('0.00');
+  performanceList = signal<ActivityStatRow[]>([]);
+  bimesterStats = signal<BimesterSummary[]>([]);
+  generalWeightedAverage = signal<string>('—'); // Nombre conservado por compatibilidad con el HTML existente.
+  totalStudents = signal(0);
+  totalActivities = signal(0);
+  gradesRecorded = signal(0);
+  studentsWithAverage = signal(0);
   isLoading = signal<boolean>(false);
+  errorMessage = signal<string>('');
 
-  // Almacén de datos originales
-  private rawPerformanceData: any[] = [];
-  private rawStudentsData: StudentGradebook[] = [];
-
+  private rawPerformanceData: ActivityStatRow[] = [];
+  private lastRequestId = 0;
   filterForm!: FormGroup;
 
-  activityTypes = [
-    'Todas las actividades',
-    'Examen',
-    'Práctica Calificada',
-    'Trabajo Final'
-  ];
+  activityTypes = ['Todas las actividades', 'Examen', 'Práctica Calificada', 'Trabajo Final'];
 
   ngOnInit(): void {
     this.filterForm = this.fb.group({
@@ -60,163 +41,80 @@ export class GradesPerformanceComponent implements OnInit {
       selectedActivityType: ['Todas las actividades'],
       searchQuery: ['']
     });
-
     this.loadCourseSections();
-
-    this.filterForm.get('selectedCourse')?.valueChanges.subscribe((sectionId) => {
-      if (sectionId) {
-        this.loadSectionPerformance(sectionId);
-      }
+    this.filterForm.get('selectedCourse')?.valueChanges.subscribe(sectionId => {
+      if (sectionId) this.loadSectionPerformance(sectionId);
     });
-
-    this.filterForm.valueChanges.subscribe(() => {
-      this.applyFilters();
-    });
+    this.filterForm.valueChanges.subscribe(() => this.applyFilters());
   }
 
   loadCourseSections(): void {
     this.isLoading.set(true);
+    this.errorMessage.set('');
     this.academService.getCourseSections().subscribe({
-      next: (data) => {
+      next: data => {
         const sections = Array.isArray(data) ? data : [];
         this.courses.set(sections);
-
-        if (sections.length > 0) {
-          const firstId = sections[0].id;
-          this.filterForm.get('selectedCourse')?.setValue(firstId, { emitEvent: false });
-          this.loadSectionPerformance(firstId);
-        } else {
+        if (!sections.length) {
+          this.errorMessage.set('No hay cursos asignados para consultar.');
           this.isLoading.set(false);
+          return;
         }
+        const firstId = sections[0].id;
+        this.filterForm.get('selectedCourse')?.setValue(firstId, { emitEvent: false });
+        this.loadSectionPerformance(firstId);
       },
-      error: (err) => {
-        console.error('Error al cargar secciones de cursos:', err);
+      error: () => {
+        this.errorMessage.set('No se pudieron cargar los cursos. Comprueba la sesión y FastAPI.');
         this.isLoading.set(false);
       }
     });
   }
 
   loadSectionPerformance(courseSectionId: string | number): void {
+    const requestId = ++this.lastRequestId;
     this.isLoading.set(true);
-
+    this.errorMessage.set('');
     this.academService.getGradebook(courseSectionId).subscribe({
       next: (response: GradebookResponse) => {
-        const activities = response.activities || [];
-        this.rawStudentsData = response.students || [];
-
-        // 1. Mapeo de actividades para la tabla de rendimiento
-        this.rawPerformanceData = activities.map((act: any, index: number) => ({
-          periodName: `Bimestre ${act.bimester || 1}`,
-          bimesterNum: act.bimester || 1,
-          activityType: act.title || 'Evaluación',
-          date: 'Reciente',
-          grade: '—', 
-          weight: '25%',
-          status: index % 2 === 0 ? 'Aprobado' : 'En revisión'
-        }));
-
-        // 2. Calcular las estadísticas de los 4 bimestres de forma matemática y segura
-        this.computeBimesterStatistics(activities, this.rawStudentsData);
-
-        // 3. Calcular el promedio ponderado general de la sección
-        this.computeGeneralAverage(this.rawStudentsData);
-
+        // No se muestran respuestas obsoletas si el docente cambia de curso rápidamente.
+        if (requestId !== this.lastRequestId) return;
+        const summary = analyzeGradebook(response.activities || [], response.students || []);
+        this.rawPerformanceData = summary.activities;
+        this.bimesterStats.set(summary.bimesters);
+        this.generalWeightedAverage.set(summary.overallAverage);
+        this.totalStudents.set(summary.totalStudents);
+        this.totalActivities.set(summary.totalActivities);
+        this.gradesRecorded.set(summary.gradesRecorded);
+        this.studentsWithAverage.set(summary.studentsWithAverage);
         this.applyFilters();
         this.isLoading.set(false);
       },
-      error: (err) => {
-        console.error('Error al cargar el gradebook:', err);
+      error: () => {
+        if (requestId !== this.lastRequestId) return;
         this.rawPerformanceData = [];
-        this.rawStudentsData = [];
         this.performanceList.set([]);
         this.bimesterStats.set([]);
-        this.generalWeightedAverage.set('0.00');
+        this.generalWeightedAverage.set('—');
+        this.totalStudents.set(0);
+        this.totalActivities.set(0);
+        this.gradesRecorded.set(0);
+        this.studentsWithAverage.set(0);
+        this.errorMessage.set('No se pudo consultar el registro de calificaciones. Reintenta o comprueba FastAPI.');
         this.isLoading.set(false);
       }
     });
   }
 
-  /**
-   * Ciclo analítico para calcular el cuadro estadístico de los 4 bimestres
-   */
-  private computeBimesterStatistics(activities: any[], students: StudentGradebook[]): void {
-    const stats: BimesterStat[] = [];
-
-    for (let bim = 1; bim <= 4; bim++) {
-      // Filtrar actividades correspondientes a este bimestre
-      const bimActivities = activities.filter(a => (a.bimester || 1) === bim);
-      
-      // Extraer notas de los estudiantes para este bimestre específico
-      let totalSum = 0;
-      let countGrades = 0;
-
-      students.forEach(student => {
-        if (student.bimester_averages) {
-          // Buscamos si existe un promedio directo para este bimestre en la estructura del alumno
-          const bimKey = `bimester_${bim}` as keyof typeof student.bimester_averages;
-          const bimAvg = student.bimester_averages[bimKey];
-          if (typeof bimAvg === 'number' && !isNaN(bimAvg)) {
-            totalSum += bimAvg;
-            countGrades++;
-          }
-        }
-      });
-
-      const calculatedAverage = countGrades > 0 ? (totalSum / countGrades) : 0.00;
-      const progressPercent = Math.min(Math.round((calculatedAverage / 20) * 100), 100);
-
-      stats.push({
-        bimesterNumber: bim,
-        bimesterTitle: `Bimestre ${bim}`,
-        averageScore: calculatedAverage.toFixed(2),
-        totalActivities: bimActivities.length,
-        approvedCount: countGrades,
-        statusLabel: calculatedAverage >= 11 ? 'Rendimiento Óptimo' : (calculatedAverage > 0 ? 'En Progreso' : 'Sin Evaluaciones'),
-        progressPercentage: progressPercent
-      });
-    }
-
-    this.bimesterStats.set(stats);
-  }
-
-  private computeGeneralAverage(students: StudentGradebook[]): void {
-    if (!students || students.length === 0) {
-      this.generalWeightedAverage.set('0.00');
-      return;
-    }
-
-    const validAverages = students
-      .map(s => s.current_average)
-      .filter(avg => typeof avg === 'number' && !isNaN(avg));
-
-    if (validAverages.length === 0) {
-      this.generalWeightedAverage.set('0.00');
-      return;
-    }
-
-    const sum = validAverages.reduce((acc, curr) => acc + curr, 0);
-    const overall = sum / validAverages.length;
-    this.generalWeightedAverage.set(overall.toFixed(2));
-  }
-
   applyFilters(): void {
-    const { selectedActivityType, searchQuery } = this.filterForm.value;
-    let filtered = [...this.rawPerformanceData];
-
-    if (selectedActivityType && selectedActivityType !== 'Todas las actividades') {
-      filtered = filtered.filter(item => 
-        item.activityType.toLowerCase().includes(selectedActivityType.toLowerCase())
-      );
-    }
-
-    if (searchQuery && searchQuery.trim() !== '') {
-      const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter(item => 
-        item.periodName.toLowerCase().includes(query) ||
-        item.activityType.toLowerCase().includes(query)
-      );
-    }
-
-    this.performanceList.set(filtered);
+    if (!this.filterForm) return;
+    const selectedType = String(this.filterForm.value.selectedActivityType || '');
+    const search = String(this.filterForm.value.searchQuery || '').toLowerCase().trim();
+    this.performanceList.set(this.rawPerformanceData.filter(item => {
+      if (selectedType && selectedType !== 'Todas las actividades' &&
+          !item.activityType.toLowerCase().includes(selectedType.toLowerCase())) return false;
+      return !search || item.activityType.toLowerCase().includes(search) ||
+        item.periodName.toLowerCase().includes(search);
+    }));
   }
 }

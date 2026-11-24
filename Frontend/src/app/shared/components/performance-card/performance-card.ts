@@ -9,11 +9,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./performance-card.css']
 })
 export class PerformanceCardComponent {
-  // Datos del bimestre recibidos desde el componente padre
-  @Input({ required: true }) periodName!: string;   // Ej: "1er Bimestre"
-  @Input({ required: true }) activityType!: string; // Ej: "Examen"
-  @Input({ required: true }) date!: string;         // Ej: "12 Oct 2024"
-  @Input({ required: true }) grade!: string;        // Ej: "18.0" o "—"
-  @Input({ required: true }) weight!: string;       // Ej: "25%"
-  @Input({ required: true }) status!: 'Aprobado' | 'En revisión' | 'Reprobado';
+  @Input({ required: true }) periodName!: string;
+  @Input({ required: true }) activityType!: string;
+  @Input({ required: true }) date!: string;
+  @Input({ required: true }) grade!: string;
+  @Input({ required: true }) weight!: string;
+  @Input({ required: true }) status!: 'Con notas' | 'Sin notas';
 }

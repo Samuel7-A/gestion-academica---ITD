@@ -1,0 +1,46 @@
+{
+  "date_utc": "2026-11-24T05:42:59.647200+00:00",
+  "environment": "http://localhost:8000",
+  "type": "sequential_not_load_test",
+  "count_per_endpoint": 30,
+  "pause_seconds": 0.05,
+  "dataset": "synthetic_demo",
+  "results": {
+    "/health": {
+      "requests": 30,
+      "successes": 30,
+      "errors": 0,
+      "median_ms": 21.89,
+      "p95_ms": 32.03,
+      "min_ms": 4.71,
+      "max_ms": 33.19,
+      "status_codes": {
+        "200": 30
+      }
+    },
+    "/course-sections": {
+      "requests": 30,
+      "successes": 30,
+      "errors": 0,
+      "median_ms": 28.88,
+      "p95_ms": 38.74,
+      "min_ms": 9.83,
+      "max_ms": 41.53,
+      "status_codes": {
+        "200": 30
+      }
+    },
+    "/ml/predict": {
+      "requests": 30,
+      "successes": 30,
+      "errors": 0,
+      "median_ms": 29.47,
+      "p95_ms": 37.6,
+      "min_ms": 14.31,
+      "max_ms": 38.39,
+      "status_codes": {
+        "200": 30
+      }
+    }
+  }
+}
