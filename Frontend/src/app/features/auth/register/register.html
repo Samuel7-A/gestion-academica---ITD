@@ -1,55 +1,17 @@
-<div class="register-container">
-  <div class="register-card">
-    <div class="register-header">
-      <h2>Gestión Académica</h2>
-      <p>Ingresa Datos Personales</p>
-    </div>
-
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <app-custom-input label="Primer Nombre" type="text" formControlName="primerNombre"
-          placeholder="Marcelino"></app-custom-input>
-      </div>
-
-      <div class="form-group">
-        <app-custom-input label="Apellidos" text="Apellidos" type="text" formControlName="apellidos"
-          placeholder="Rojas de la Cruz"></app-custom-input>
-      </div>
-
-      <div class="form-group">
-        <app-custom-input label="Numero Telefono" type="tel" formControlName="telefono"
-          placeholder="952 152 154"></app-custom-input>
-      </div>
-
-      <div class="form-group">
-        <label>Especialidades</label>
-        <div class="especialidades-box">
-          @for (esp of especialidadesList; track $index) {
-          <button type="button" class="pill-btn" [class.active]="isEspecialidadSelected(esp)"
-            (click)="toggleEspecialidad(esp)">
-            {{ esp.nombre }}
-          </button>
-          }
-        </div>
-      </div>
-
-      <app-custom-input
-        label="Correo"
-        type="email"
-        formControlName="correo"
-        placeholder="soy_Docente.pro@gmail.com"
-        ></app-custom-input>
-      <app-custom-input
-        label="Contraseña"
-        type="password"
-        placeholder="sebitasPro385"
-        formControlName="password"
-        ></app-custom-input>
-      <div class="form-actions">
-        <app-custom-button text="Registrarse" type="submit" [disabled]="registerForm.invalid"></app-custom-button>
-        <app-custom-button text="Iniciar Sesion" (clicked)="onLoginRedirect()"></app-custom-button>
-      </div>
-
-    </form>
-  </div>
-</div>
+<div class="register-container"><div class="register-card">
+  <div class="register-header"><h2>Registro de docentes</h2><p>Solo con invitación de un administrador.</p></div>
+  @if(error()){<p class="form-error" role="alert">{{error()}}</p>}
+  @if(success()){<p class="form-success" role="status">{{success()}}</p><button class="btn btn-primary" type="button" (click)="onLoginRedirect()">Ir al login</button>}
+  @else {
+   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+    <div class="form-group"><label for="reg-name">Nombre completo</label><input id="reg-name" formControlName="full_name" autocomplete="name" maxlength="150" required></div>
+    <div class="form-group"><label for="reg-email">Correo</label><input id="reg-email" type="email" formControlName="email" autocomplete="email" required></div>
+    <div class="form-group"><label for="reg-invite">Código de invitación</label><input id="reg-invite" formControlName="invite_token" autocomplete="off" required></div>
+    <div class="form-group"><label for="reg-pass">Contraseña (12 caracteres o más)</label><input id="reg-pass" type="password" formControlName="password" autocomplete="new-password" required></div>
+    <div class="form-group"><label for="reg-confirm">Confirmar contraseña</label><input id="reg-confirm" type="password" formControlName="confirm_password" autocomplete="new-password" required></div>
+    <div class="form-actions"><button type="submit" class="btn btn-primary" [disabled]="busy()||registerForm.invalid">{{busy()?'Registrando…':'Crear cuenta'}}</button>
+    <button type="button" class="btn btn-secondary" (click)="onLoginRedirect()">Tengo una cuenta</button></div>
+   </form>
+  }
+  <p class="register-note">Prototipo educativo: no introducir datos personales reales de estudiantes.</p>
+</div></div>

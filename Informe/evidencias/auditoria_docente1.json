@@ -1,0 +1,43 @@
+{
+  "timestamp_utc": "2026-11-24T14:33:12.266460+00:00",
+  "environment": "http://127.0.0.1:8000/api/v1",
+  "synthetic_demo_only": true,
+  "checks": {
+    "health": {
+      "status": "PASS",
+      "detail": "ok"
+    },
+    "ready": {
+      "status": "PASS",
+      "detail": "ready"
+    },
+    "auth": {
+      "status": "PASS",
+      "detail": "JWT válido, rol teacher"
+    },
+    "courses": {
+      "status": "PASS",
+      "detail": "4 secciones"
+    },
+    "weekly_schedule": {
+      "status": "PASS",
+      "detail": "0 clases"
+    },
+    "report_history": {
+      "status": "PASS",
+      "detail": "1 reportes"
+    },
+    "gradebook": {
+      "status": "PASS",
+      "detail": "20 estudiantes"
+    },
+    "exam_schedules": {
+      "status": "PASS",
+      "detail": "0 exámenes"
+    },
+    "prediction": {
+      "status": "PASS",
+      "detail": "modelo demo-v1 (sintético)"
+    }
+  }
+}

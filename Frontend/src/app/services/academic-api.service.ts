@@ -46,21 +46,21 @@ export interface Prediction {
 @Injectable({ providedIn: 'root' })
 export class AcademicApiService {
   private readonly http = inject(HttpClient);
-  private readonly tokenKey = 'apf3_teacher_access_token';
+  private readonly tokenKey = 'auth_token';
   private readonly api = ACADEMIC_API_URL;
 
-  get hasSession(): boolean { return !!sessionStorage.getItem(this.tokenKey); }
+  get hasSession(): boolean { return !!localStorage.getItem(this.tokenKey); }
 
   authenticate(email: string, password: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.api}/auth/login`, { email, password }).pipe(
-      tap((response: LoginResponse) => sessionStorage.setItem(this.tokenKey, response.access_token))
+      tap((response: LoginResponse) => localStorage.setItem(this.tokenKey, response.access_token))
     );
   }
 
-  logout(): void { sessionStorage.removeItem(this.tokenKey); }
+  logout(): void { localStorage.removeItem(this.tokenKey); }
 
   private options() {
-    const token = sessionStorage.getItem(this.tokenKey) || '';
+    const token = localStorage.getItem(this.tokenKey) || '';
     return { headers: new HttpHeaders({ Authorization: `Bearer ${token}` }) };
   }
 

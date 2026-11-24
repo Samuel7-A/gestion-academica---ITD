@@ -4,7 +4,7 @@
       <h1 id="schedule-title">Mi Horario</h1>
       <p>Vista semanal de clases</p>
     </div>
-    <span class="demo-label" title="Ejemplo visual del prototipo, no procedente de PostgreSQL">Horario de demostración</span>
+    <span class="demo-label">{{ loading() ? "Cargando clases…" : "Horario de PostgreSQL" }}</span>
   </header>
 
   <div class="schedule-toolbar">
@@ -19,7 +19,9 @@
     </div>
   </div>
 
-  <div class="desktop-timetable" role="table" aria-label="Horario semanal de clases ilustrativo">
+  @if (error()) { <p class="schedule-footnote" role="alert">{{error()}}</p> }
+  @if (!loading() && !error() && weeklyCount() === 0) { <p class="schedule-footnote">Todavía no hay clases asignadas a este docente. Un administrador puede programarlas desde Administración.</p> }
+  <div class="desktop-timetable" role="table" aria-label="Horario de clases del docente">
     <div class="time-heading" role="columnheader">Hora</div>
     @for (day of days; track day.id) {
       <div class="day-heading" role="columnheader">{{ day.name }}</div>
@@ -69,5 +71,5 @@
     }
   </div>
 
-  <p class="schedule-footnote">Datos ilustrativos del prototipo. Las materias se repiten al cambiar de semana; esta vista todavía no consulta un horario institucional en la base de datos.</p>
+  <p class="schedule-footnote">Horario recurrente almacenado en PostgreSQL. Se repite semanalmente; las excepciones por feriados todavía no están modeladas.</p>
 </section>

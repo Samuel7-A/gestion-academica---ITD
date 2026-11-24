@@ -25,6 +25,7 @@
 
   <nav class="sidebar-nav">
   @for (item of menuItems; track $index) {
+    @if (item.label !== 'Administración' || userService.currentUser()?.role === 'admin') {
     <a 
       [routerLink]="item.route" 
       routerLinkActive="active"
@@ -34,6 +35,7 @@
       <span class="nav-indicator-dot"></span>
       <span class="nav-text">{{ item.label }}</span>
     </a>
+    }
   }
 </nav>
 

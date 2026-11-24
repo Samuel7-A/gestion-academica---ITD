@@ -1,24 +1,23 @@
-import { TestBed } from '@angular/core/testing';
-import { App } from './app';
+/** @vitest-environment jsdom */
+import '@angular/compiler';
+import { describe, expect, it } from 'vitest';
+import { routes } from './app.routes';
 
-describe('App', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [App],
-    })
-      .compileComponents();
+describe('Rutas principales del sistema', () => {
+  it('mantiene accesibles las pantallas de autenticación', () => {
+    expect(routes.some(r => r.path === 'auth/login')).toBe(true);
+    expect(routes.some(r => r.path === 'auth/register')).toBe(true);
   });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+  it('mantiene protegida la navegación académica', () => {
+    const shell = routes.find(r => r.path === 'principal');
+    expect(shell).toBeDefined();
+    expect(shell?.canActivate?.length).toBeGreaterThan(0);
+    expect(shell?.children?.some(r => r.path === 'courses')).toBe(true);
+    expect(shell?.children?.some(r => r.path === 'courses/schedule')).toBe(true);
   });
 
-  it('should render title', async () => {
-    const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, Frontend');
+  it('redirige las rutas desconocidas', () => {
+    expect(routes.find(r => r.path === '**')?.redirectTo).toBe('principal/courses');
   });
 });

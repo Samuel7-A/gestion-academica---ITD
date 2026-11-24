@@ -1,0 +1,33 @@
+<section class="admin-page"><h1>Administración académica</h1>
+  <p>Invitaciones, asignación de cursos y horario semanal de clases.</p>
+  @if(!isAdmin){<p class="admin-error">Acceso exclusivo para administradores.</p>}
+  @else{
+    @if(error()){<p class="admin-error" role="alert">{{error()}}</p>}
+    @if(notice()){<p class="admin-note" role="status">{{notice()}}</p>}
+    <div class="admin-grid">
+      <section class="admin-card"><h2>Invitar docente</h2>
+        <label>Correo<input type="email" [(ngModel)]="inviteEmail" placeholder="docente@demo.edu.pe"></label>
+        <button (click)="invite()" [disabled]="busy()||!inviteEmail.trim()">Generar invitación</button>
+        @if(inviteToken()){<p class="admin-warning">Código privado de un solo uso; no lo publiques ni lo incluyas en capturas.</p>
+          <code class="admin-token">{{inviteToken()}}</code>}
+      </section>
+      <section class="admin-card"><h2>Asignar sección</h2>
+        <label>Curso<select [(ngModel)]="courseId">@for(s of sections();track s.id){<option [value]="s.id">{{s.course_name}} · {{s.grade_level}} {{s.section_name}} ({{s.year}})</option>}</select></label>
+        <label>Docente<select [(ngModel)]="teacherId">@for(t of teachers();track t.id){<option [value]="t.id">{{t.full_name||t.email}}</option>}</select></label>
+        <button (click)="assign()" [disabled]="busy()">Asignar curso</button>
+      </section>
+      <section class="admin-card"><h2>Programar clase semanal</h2>
+        <label>Curso<select [(ngModel)]="courseId">@for(s of sections();track s.id){<option [value]="s.id">{{s.course_name}} · {{s.grade_level}} {{s.section_name}}</option>}</select></label>
+        <label>Día<select [(ngModel)]="day"><option value="lunes">Lunes</option><option value="martes">Martes</option><option value="miercoles">Miércoles</option><option value="jueves">Jueves</option><option value="viernes">Viernes</option></select></label>
+        <label>Hora<select [(ngModel)]="slot"><option value="07-09">07:00–09:00</option><option value="09-11">09:00–11:00</option><option value="11-13">11:00–13:00</option><option value="14-16">14:00–16:00</option></select></label>
+        <label>Aula<input [(ngModel)]="room" maxlength="80" placeholder="Aula 302"></label>
+        <button (click)="addLesson()" [disabled]="busy()">Guardar horario</button>
+        <button class="muted" (click)="seedDemo()" [disabled]="busy()">Cargar horario sintético (solo si está vacío)</button>
+      </section>
+    </div>
+    <section class="admin-card"><h2>Clases programadas</h2>
+      @for(l of lessons();track l.id){<div class="admin-lesson"><span>{{l.day}} · {{l.slot}} · {{l.subject}} {{l.group}} · {{l.room}} · {{l.teacher}}</span><button (click)="deleteLesson(l.id)" [disabled]="busy()">Eliminar</button></div>}
+      @empty{<p>No hay clases guardadas. Utiliza el formulario para programarlas.</p>}
+    </section>
+  }
+</section>

@@ -50,7 +50,7 @@ export class LoginComponent {
           this.docenteActual = response.user;
           
           // Redirigir al usuario a la ruta principal o dashboard
-          this.router.navigate(['/dashboard']); // Cambia '/dashboard' por tu ruta deseada
+          this.router.navigate(['/principal/courses']);
         },
         error: (err) => {
           console.error('Error al iniciar sesión', );

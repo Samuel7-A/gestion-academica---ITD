@@ -4,7 +4,7 @@ El frontend solo consulta la API. Nunca accede directamente a PostgreSQL.
 """
 from datetime import date, datetime, time
 
-from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, String, Time
+from sqlalchemy import CheckConstraint, Date, DateTime, ForeignKey, Integer, String, Time, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models import Base, utcnow
@@ -46,4 +46,5 @@ class ReportHistory(Base):
     report_type: Mapped[str] = mapped_column(String(35))
     filename: Mapped[str] = mapped_column(String(180))
     row_count: Mapped[int] = mapped_column(Integer, default=0)
+    csv_content: Mapped[str | None] = mapped_column(Text, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
