@@ -45,6 +45,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/pages/risks-page/risks-page').then(m => m.RisksPageComponent)
       },
       {
+        path: 'courses/schedule',
+        loadComponent: () => import('./features/pages/schedule-page/schedule-page').then(m => m.SchedulePageComponent)
+      },
+      {
         path: '',
         redirectTo: 'courses',
         pathMatch: 'full'

@@ -24,3 +24,15 @@ html, body {
   --text-main: #1e293b;
   --border-color: #cbd5e1;
 }
+
+/* HORARIO-ITD: mostrar solo el calendario al imprimir desde su pantalla. */
+@media print {
+  body:has(.schedule-page) app-navbar,
+  body:has(.schedule-page) app-topbar,
+  body:has(.schedule-page) .mobile-toggle-btn,
+  body:has(.schedule-page) .sidebar-overlay { display: none !important; }
+  body:has(.schedule-page) .app-layout,
+  body:has(.schedule-page) .main-content,
+  body:has(.schedule-page) .page-container { height: auto !important; max-height: none !important; overflow: visible !important; display: block !important; }
+  body:has(.schedule-page) { background: #fff !important; }
+}

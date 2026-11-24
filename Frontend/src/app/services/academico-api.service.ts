@@ -37,6 +37,16 @@ export class AcademicoService {
     return this.http.get<any>(`${this.apiCourse}/${courseSectionId}/gradebook`);
   }
 
+  // Guardado real de notas mediante FastAPI (valida 0-20 en servidor).
+  saveGrade(activityId: string, studentId: string, value: number): Observable<any> {
+    return this.http.put<any>(`${this.api}/activities/${encodeURIComponent(activityId)}/grades/${encodeURIComponent(studentId)}`, { value });
+  }
+
+  // Vaciar una celda elimina la nota, no equivale a guardar cero.
+  deleteGrade(activityId: string, studentId: string): Observable<void> {
+    return this.http.delete<void>(`${this.api}/activities/${encodeURIComponent(activityId)}/grades/${encodeURIComponent(studentId)}`);
+  }
+
   // 6. GET: Historial académico de un estudiante (todos los años)
   getStudentAcademicHistory(studentId: number | string): Observable<any> {
     return this.http.get<any>(`${this.api}/api/v1/students/${studentId}/academic-history`);
