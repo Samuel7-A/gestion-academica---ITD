@@ -1,0 +1,23 @@
+{
+  "project": "Innovacion Gestion Academica ITD",
+  "executed_at_utc": "2026-11-24T15:27:04.546475+00:00",
+  "note": "Pruebas con cuentas sintéticas. Los datos temporales se intentan restaurar tras cada caso.",
+  "results": {
+    "seguridad_cursos_ajenos": {
+      "status": "PASS",
+      "detail": "8 accesos ajenos devuelven 403"
+    },
+    "nota_persistente_y_restaurada": {
+      "status": "PASS",
+      "detail": "nota 13.25 guardada, rechazada para otro docente y eliminada correctamente"
+    },
+    "examen_persistente_y_restaurado": {
+      "status": "PASS",
+      "detail": "examen guardado, 403 ajeno y registro temporal eliminado"
+    },
+    "horario_persistente_y_restaurado": {
+      "status": "PASS",
+      "detail": "horario guardado, acceso solo para docente titular y eliminado por admin"
+    }
+  }
+}

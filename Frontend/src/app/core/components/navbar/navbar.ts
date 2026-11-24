@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 export class NavbarComponent {
   isMobileOpen = false;
   private router = inject(Router);
-  private userService = inject(UsuarioService);
+  readonly userService = inject(UsuarioService);
 
   menuItems = [
     { label: 'Cursos', route: '/principal/courses' },
@@ -28,7 +28,8 @@ export class NavbarComponent {
     { label: 'Exámenes', route: '/principal/courses/exams' },
     { label: 'Reportes', route: '/principal/courses/reports' },
     { label: 'Indicadores de riesgo', route: '/principal/courses/risks' },
-    { label: 'Horario', route: '/principal/courses/schedule' }
+    { label: 'Horario', route: '/principal/courses/schedule' },
+    { label: 'Administración', route: '/principal/courses/admin' }
   ];
 
   toggleMobileMenu(): void {

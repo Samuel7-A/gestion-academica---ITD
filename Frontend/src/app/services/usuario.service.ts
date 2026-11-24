@@ -48,6 +48,11 @@ export class UsuarioService {
   /**
    * Cierra la sesión limpiando el almacenamiento local y reseteando el signal.
    */
+  /** Registro exclusivamente por invitación de un administrador. */
+  register(body: { full_name: string; email: string; password: string; invite_token: string }): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.api}/register`, body);
+  }
+
   logout(): void {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('current_user');

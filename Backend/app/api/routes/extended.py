@@ -228,6 +228,7 @@ class ReportHistoryInput(BaseModel):
     report_type: Literal["notas", "asistencia", "riesgo", "otro"]
     filename: str = Field(min_length=1, max_length=180)
     row_count: int = Field(ge=0, le=1000000)
+    csv_content: str | None = Field(default=None, max_length=500000)
 
     @field_validator("filename")
     @classmethod
@@ -256,7 +257,7 @@ def create_report_history(body: ReportHistoryInput, user: CurrentUser, db: DbSes
     item = ReportHistory(id=f"RPT-{uuid.uuid4().hex.upper()}", user_id=user.id,
                          course_section_id=body.course_section_id,
                          report_type=body.report_type, filename=body.filename,
-                         row_count=body.row_count)
+                         row_count=body.row_count, csv_content=body.csv_content)
     db.add(item)
     db.commit()
     return item
@@ -272,6 +273,24 @@ def list_report_history(user: CurrentUser, db: DbSession,
         query = query.where(ReportHistory.course_section_id == course_section_id)
     return list(db.scalars(query.order_by(ReportHistory.created_at.desc()).limit(100)))
 
+
+@reports_router.get("/{report_id}/csv", summary="Descargar el CSV previamente generado")
+def download_report_csv(report_id: str, user: CurrentUser, db: DbSession):
+    item = db.get(ReportHistory, report_id)
+    if item is None or (item.user_id != user.id and not is_admin(user)):
+        raise HTTPException(404, "Reporte no encontrado")
+    if item.csv_content is None:
+        raise HTTPException(404, "El reporte anterior no tiene archivo guardado; vuelve a generarlo")
+    from fastapi.responses import Response as CsvResponse
+    filename = re.sub(r"[^a-zA-Z0-9_.-]", "_", item.filename)
+    return CsvResponse(item.csv_content, media_type="text/csv; charset=utf-8",
+                       headers={"Content-Disposition": f'attachment; filename="{filename}"',
+                                "Cache-Control": "no-store"})
+
+@admin_router.get("/teachers", response_model=list[UserOut], summary="Administración: listar docentes")
+def list_teachers(user: CurrentUser, db: DbSession):
+    require_admin(user)
+    return list(db.scalars(select(User).where(User.role == "teacher").order_by(User.full_name)))
 
 @health_router.get("/ready", status_code=200, summary="Comprobación de disponibilidad de PostgreSQL")
 def readiness(db: DbSession):

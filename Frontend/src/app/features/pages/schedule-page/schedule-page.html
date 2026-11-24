@@ -1,0 +1,75 @@
+<section class="schedule-page" aria-labelledby="schedule-title">
+  <header class="schedule-heading">
+    <div>
+      <h1 id="schedule-title">Mi Horario</h1>
+      <p>Vista semanal de clases</p>
+    </div>
+    <span class="demo-label">{{ loading() ? "Cargando clases…" : "Horario de PostgreSQL" }}</span>
+  </header>
+
+  <div class="schedule-toolbar">
+    <div class="week-navigator" aria-label="Cambiar semana">
+      <button type="button" class="nav-week" aria-label="Semana anterior" (click)="previousWeek()">&#8249;</button>
+      <strong class="week-range" aria-live="polite">{{ dateRange() }}</strong>
+      <button type="button" class="nav-week" aria-label="Semana siguiente" (click)="nextWeek()">&#8250;</button>
+    </div>
+    <div class="schedule-actions">
+      <button type="button" class="today-button" (click)="goToToday()" [disabled]="isCurrentWeek()">Hoy</button>
+      <button type="button" class="print-button" (click)="printSchedule()">Imprimir Horario</button>
+    </div>
+  </div>
+
+  @if (error()) { <p class="schedule-footnote" role="alert">{{error()}}</p> }
+  @if (!loading() && !error() && weeklyCount() === 0) { <p class="schedule-footnote">Todavía no hay clases asignadas a este docente. Un administrador puede programarlas desde Administración.</p> }
+  <div class="desktop-timetable" role="table" aria-label="Horario de clases del docente">
+    <div class="time-heading" role="columnheader">Hora</div>
+    @for (day of days; track day.id) {
+      <div class="day-heading" role="columnheader">{{ day.name }}</div>
+    }
+
+    @for (slot of slots; track slot.id) {
+      <div class="time-label" [class.break-label]="slot.isBreak" role="rowheader">{{ slot.label }}</div>
+      @if (slot.isBreak) {
+        <div class="recess-band" role="cell">— RECREO / ALMUERZO —</div>
+      } @else {
+        @for (day of days; track day.id) {
+          <div class="session-cell" role="cell">
+            @if (getClass(day.id, slot.id); as lesson) {
+              <div class="session-card" [class]="'session-card ' + lesson.tone" [attr.aria-label]="lesson.subject + ' ' + lesson.group + ', ' + lesson.place + ', ' + lesson.teacher">
+                <div class="session-name">{{ lesson.subject }} {{ lesson.group }}</div>
+                <div class="session-meta">{{ lesson.place }} · {{ lesson.teacher }}</div>
+              </div>
+            } @else {
+              <div class="session-empty" aria-label="Sin clase en este horario"></div>
+            }
+          </div>
+        }
+      }
+    }
+  </div>
+
+  <div class="mobile-timetable" aria-label="Horario de clases por día">
+    @for (day of days; track day.id) {
+      <section class="mobile-day">
+        <h2>{{ day.name }}</h2>
+        <div class="mobile-day-list">
+          @for (slot of slots; track slot.id) {
+            @if (!slot.isBreak) {
+              @if (getClass(day.id, slot.id); as lesson) {
+                <div class="mobile-session" [class]="'mobile-session ' + lesson.tone">
+                  <div class="mobile-session-time">{{ slot.label }}</div>
+                  <div class="mobile-session-body">
+                    <strong>{{ lesson.subject }} {{ lesson.group }}</strong>
+                    <span>{{ lesson.place }} · {{ lesson.teacher }}</span>
+                  </div>
+                </div>
+              }
+            }
+          }
+        </div>
+      </section>
+    }
+  </div>
+
+  <p class="schedule-footnote">Horario recurrente almacenado en PostgreSQL. Se repite semanalmente; las excepciones por feriados todavía no están modeladas.</p>
+</section>

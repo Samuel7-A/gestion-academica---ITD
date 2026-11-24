@@ -1,81 +1,139 @@
 <div class="app-layout">
   <main class="main-content">
     <div class="page-body">
-      
-      <!-- Barra de Acciones Superior -->
+      <h1>Registro de calificaciones</h1>
+      <p class="grade-help">Datos sintéticos de demostración. Edita una celda y haz clic fuera para guardar en PostgreSQL. Una celda vacía significa «sin nota»; 0 es una calificación válida.</p>
       <div class="actions-toolbar">
-        <app-custom-button
-          text="Volver a Cursos"
-          (clicked)="goBack()"
-          customClass="btn-outline"
-        ></app-custom-button>
-        
-        <app-custom-button
-          text="Exportar reporte"
-          customClass="btn-primary"
-          (clicked)="onExport()"
-        ></app-custom-button>
+        <app-custom-button text="Volver a Cursos" (clicked)="goBack()" customClass="btn-outline"></app-custom-button>
+        <app-custom-button text="Exportar reporte" (clicked)="onExport()" customClass="btn-primary"></app-custom-button>
       </div>
-
-      <!-- Tarjeta Contenedora de la Tabla -->
-      <div class="table-card">
+      @if (error()) {
+        <p role="alert" class="grade-error">{{ error() }}</p>
+      }
+      @if (notice()) {
+        <p role="status" class="grade-notice">{{ notice() }}</p>
+      }
+      <!-- ITD: escritorio sin tabla extensa ni desplazamiento horizontal.
+           Los campos invocan el mismo autoguardado que la vista móvil. -->
+      <section class="desktop-grade-panel table-card" aria-label="Calificaciones por estudiante">
         @if (isLoading()) {
-          <div class="loading-state">Cargando registro de calificaciones...</div>
+          <div class="loading-state">Cargando estudiantes y calificaciones…</div>
         } @else {
-          <div class="table-responsive">
-            <table class="grades-table">
-              <thead>
-                <tr>
-                  <th class="col-code">Código</th>
-                  <th class="col-student">Estudiante</th>
-                  
-                  <!-- Cabeceras dinámicas con las actividades del JSON -->
-                  @if (activities()) {
+          <div class="desktop-grade-heading">
+            <div>
+              <h2>Estudiantes del curso</h2>
+              <p>Selecciona un estudiante para consultar o modificar sus calificaciones.</p>
+            </div>
+            <span class="desktop-grade-count">{{ studentsList().length }} estudiantes</span>
+          </div>
+          <div class="desktop-grade-columns" aria-hidden="true">
+            <span>Estudiante</span>
+            <span class="desktop-bimester-col">Bimestre 1</span>
+            <span class="desktop-bimester-col">Bimestre 2</span>
+            <span>Promedio</span>
+            <span>Detalle</span>
+          </div>
+          <div class="desktop-grade-rows">
+            @for (student of studentsList(); track student.student_id) {
+              <details class="desktop-grade-student" name="desktop-grade-accordion">
+                <summary class="desktop-grade-student-header">
+                  <span class="desktop-grade-person">
+                    <span class="desktop-grade-avatar" aria-hidden="true">{{ student.full_name.slice(0, 1) }}</span>
+                    <span class="desktop-grade-identity">
+                      <strong>{{ student.full_name }}</strong>
+                      <small>{{ student.code }}</small>
+                    </span>
+                  </span>
+                  <span class="desktop-grade-score desktop-bimester-col">{{ student.bimester_averages?.bimester_1 == null ? '—' : (student.bimester_averages.bimester_1 | number:'1.2-2') }}</span>
+                  <span class="desktop-grade-score desktop-bimester-col">{{ student.bimester_averages?.bimester_2 == null ? '—' : (student.bimester_averages.bimester_2 | number:'1.2-2') }}</span>
+                  <span class="desktop-grade-score desktop-grade-overall">{{ student.current_average == null ? '—' : (student.current_average | number:'1.2-2') }}</span>
+                  <span class="desktop-grade-open"><span>Ver notas</span><span class="desktop-grade-chevron" aria-hidden="true"></span></span>
+                </summary>
+                <div class="desktop-grade-detail">
+                  <div class="desktop-grade-detail-title">
+                    <span>Calificaciones de {{ student.full_name }}</span>
+                    <small>Se guardan al salir del campo · vacío significa sin nota · 0 es válido</small>
+                  </div>
+                  <div class="desktop-grade-activities">
                     @for (activity of activities(); track activity.id) {
-                      <th>{{ activity.title }} <small class="bimester-tag">(B{{ activity.bimester }})</small></th>
+                      <label class="desktop-grade-activity">
+                        <span class="desktop-grade-activity-info">
+                          <strong>{{ activity.title }}</strong>
+                          <small>Bimestre {{ activity.bimester }}</small>
+                        </span>
+                        <input
+                          class="grade-input desktop-grade-input"
+                          type="text"
+                          inputmode="decimal"
+                          autocomplete="off"
+                          placeholder="Sin nota"
+                          [value]="gradeInputValue(student, activity.id)"
+                          [disabled]="isSaving()"
+                          [attr.aria-label]="'Nota de ' + student.full_name + ' en ' + activity.title"
+                          (blur)="guardarNota(student.student_id, activity.id, $event)"
+                          (keydown.enter)="$any($event.target).blur()"
+                        />
+                      </label>
+                    } @empty {
+                      <p class="desktop-grade-empty">No hay actividades registradas para este curso.</p>
                     }
-                  }
-                  
-                  <th class="col-average">Promedio (0-20)</th>
-                </tr>
-              </thead>
-              <tbody>
-                @if (studentsList()) {
-                  @for (student of studentsList(); track student.student_id) {
-                    <tr>
-                      <td class="col-code">{{ student.code }}</td>
-                      <td class="col-student">{{ student.full_name }}</td>
-                      
-                      <!-- Celdas de notas iterando sobre las actividades y buscando en el arreglo -->
-                      @if (activities()) {
-                        @for (activity of activities(); track activity.id) {
-                          <td>
-                            <span class="grade-badge">
-                              {{ getGradeForActivity(student, activity.id) | number:'1.2-2' }}
-                            </span>
-                          </td>
-                        }
-                      }
-
-                      <!-- Promedio general directo que devuelve tu JSON -->
-                      <td class="col-average">
-                        <strong class="average-badge">
-                          {{ student.current_average | number:'1.2-2' }}
-                        </strong>
-                      </td>
-                    </tr>
-                  } @empty {
-                    <tr>
-                      <td colspan="10" class="empty-row">
-                        No hay estudiantes matriculados en esta sección.
-                      </td>
-                    </tr>
-                  }
-                }
-              </tbody>
-            </table>
+                  </div>
+                </div>
+              </details>
+            } @empty {
+              <div class="desktop-grade-empty">Este curso todavía no tiene estudiantes matriculados.</div>
+            }
           </div>
         }
+      </section>
+      <!-- Vista adaptada a celular: no requiere desplazamiento horizontal. -->
+      <section class="mobile-grade-list" aria-label="Notas por estudiante">
+        <p class="mobile-grade-guide">Toca el nombre de un estudiante para ver y editar sus notas.</p>
+        @for (student of studentsList(); track student.student_id) {
+          <details class="mobile-student-card" name="student-grades">
+            <summary class="mobile-student-summary">
+              <span class="mobile-student-primary">
+                <span class="mobile-student-name">{{ student.full_name }}</span>
+                <span class="mobile-student-code">{{ student.code }}</span>
+              </span>
+              <span class="mobile-student-average">
+                <small>Promedio</small>
+                <strong>{{ student.current_average === null ? '—' : (student.current_average | number:'1.2-2') }}</strong>
+              </span>
+              <span class="mobile-student-chevron" aria-hidden="true"></span>
+            </summary>
+            <div class="mobile-student-detail">
+              @for (activity of activities(); track activity.id) {
+                <div class="mobile-activity-row">
+                  <span class="mobile-activity-info">
+                    <span class="mobile-activity-title">{{ activity.title }}</span>
+                    <span class="mobile-bimester">Bimestre {{ activity.bimester }}</span>
+                  </span>
+                  <input
+                    class="grade-input mobile-grade-input"
+                    type="text"
+                    inputmode="decimal"
+                    autocomplete="off"
+                    placeholder="—"
+                    [value]="gradeInputValue(student, activity.id)"
+                    [disabled]="isSaving()"
+                    [attr.aria-label]="'Nota de ' + student.full_name + ' en ' + activity.title"
+                    (blur)="guardarNota(student.student_id, activity.id, $event)"
+                    (keydown.enter)="$any($event.target).blur()"
+                  />
+                </div>
+              } @empty {
+                <p class="mobile-no-activities">Este curso no tiene actividades registradas.</p>
+              }
+              <p class="mobile-grade-note">La nota se guarda al salir del campo. Vacío = sin nota; 0 es válido.</p>
+            </div>
+          </details>
+        } @empty {
+          <p class="mobile-no-students">No hay estudiantes matriculados en este curso.</p>
+        }
+      </section>
+      <div class="bottom-controls">
+        <span class="status-info-box">{{ isSaving() ? 'Guardando nota…' : 'Promedio del curso: ' + generalClassAverage() }}</span>
       </div>
     </div>
   </main>

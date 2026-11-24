@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 
 from app import __version__
-from app.api.routes import activities, auth, course_sections, health, ml, students, extended
+from app.api.routes import activities, auth, course_sections, health, ml, students, extended, timetable
 from app.core.config import DEFAULT_JWT_SECRET, settings
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s [%(name)s] %(message)s")
@@ -36,7 +36,7 @@ app.add_middleware(
 for router in (health.router, auth.router, course_sections.router, activities.router, students.router, ml.router):
     app.include_router(router, prefix=settings.api_v1_prefix)
 
-for router in (extended.auth_router, extended.academic_router, extended.activities_router, extended.reports_router, extended.health_router, extended.admin_router):
+for router in (extended.auth_router, extended.academic_router, extended.activities_router, extended.reports_router, extended.health_router, extended.admin_router, timetable.router):
     app.include_router(router, prefix=settings.api_v1_prefix)
 
 
