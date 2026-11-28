@@ -5,6 +5,8 @@ services:
     runtime: docker
     plan: free
     dockerfilePath: ./Backend/Dockerfile
+    dockerContext: ./Backend
+    healthCheckPath: /api/v1/ready
     envVars:
       - key: APP_ENV
         value: production
